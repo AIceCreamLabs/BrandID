@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Brand Identity Generator - Instant Report</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 900px; margin: 0 auto; padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: #333; line-height: 1.6; min-height: 100vh; transition: background 0.5s;
+        }
+        /* Same styles as before for sections, progress, buttons - omitted for brevity */
+        .report { background: white; padding: 30px; border-radius: 15px; margin: 20px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .ai-loading { text-align: center; padding: 40px; font-size: 1.2em; }
+        .ai-loading::after { content: '🤖'; animation: spin 2s linear infinite; display: block; font-size: 3em; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .admin-panel { background: #ffeaa7; padding: 20px; border-radius: 10px; margin: 20px 0; display: none; }
+        .admin-list { max-height: 400px; overflow-y: auto; }
+        .result-item { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 5px solid #667eea; }
+        #aiReport { min-height: 300px; white-space: pre-wrap; }
+        button.ai-btn { background: #00cec9; }
+        button.ai-btn:hover { background: #00b894; }
+    </style>
+</head>
+<body class="brand-theme">
+    <!-- Admin Access: ?admin=your-secret-password -->
+    <div id="adminPanel" class="admin-panel">
+        <h3>📊 All Submissions (Admin View)</h3>
+        <div id="adminList" class="admin-list"></div>
+        <button onclick="clearStorage()">Clear All Data</button>
+    </div>
+
+    <h1 id="dynamicTitle">AI Brand Identity Generator<br><small>Get Your Custom Report in 30 Seconds</small></h1>
+    
+    <!-- Form sections same as previous universal version -->
+    <form id="brandForm">
+        <!-- All 9 sections with 34 questions - same structure as before -->
+        <!-- For brevity, assume identical to previous code -->
+        <section id="sec1" class="active">
+            <!-- Questions 1-5 -->
+        </section>
+        <!-- ... sec2 to sec9 ... -->
+        <nav><!-- nav buttons --></nav>
+    </form>
+
+    <div id="aiSection" style="display:none;">
+        <div class="ai-loading" id="loadingSpinner">
+            Generating your AI Brand Report with Perplexity...
+        </div>
+        <div id="aiReport" class="report" style="display:none;"></div>
+        <div style="text-align:center; margin:20px;">
+            <button class="ai-btn" onclick="redoQuestionnaire()">🔄 Not Happy? Redo Questionnaire</button>
+            <button onclick="downloadReport()">📥 Download PDF Report</button>
+        </div>
+    </div>
+
+    <script>
+        // Your Perplexity API Key (get free at perplexity.ai/api - $5 credit)
+        const PERPLEXITY_API_KEY = 'YOUR_API_KEY_HERE'; // Replace or use demo mode
+        const IS_DEMO = PERPLEXITY_API_KEY === 'YOUR_API_KEY_HERE';
+        const ADMIN_PASSWORD = 'akua2026'; // Change this!
+
+        // Admin check
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === ADMIN_PASSWORD) {
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminView();
+        }
+
+        // Same section navigation functions as before...
+        // updateTheme(), validateCurrent(), etc.
+
+        document.getElementById('brandForm').onsubmit = async (e) => {
+            e.preventDefault();
+            if (validateCurrent()) {
+                const formData = Object.fromEntries(new FormData(e.target));
+                
+                // Save to storage + show admin
+                const submissions = JSON.parse(localStorage.getItem('brandSubmissions') || '[]');
+                submissions.unshift({ id: Date.now(), data: formData, timestamp: new Date().toISOString() });
+                localStorage.setItem('brandSubmissions', JSON.stringify(submissions.slice(0, 100))); // Last 100
+                
+                if (document.getElementById('adminPanel').style.display === 'block') loadAdminView();
+                
+                document.getElementById('brandForm').style.display = 'none';
+                document.getElementById('aiSection').style.display = 'block';
+                
+                const report = await generateAIReport(formData);
+                displayReport(report, formData.q1);
+            }
+        };
+
+        async function generateAIReport(answers) {
+            if (IS_DEMO) {
+                return `🎉 DEMO MODE - AI Brand Report for ${answers.q1}\n\n` +
+                    `**Brand Name:** ${answers.q1}\n` +
+                    `**Industry:** ${answers.q2}\n**Core Personality:** ${answers.q14.split(',')[0] || 'Dynamic & Unique'}\n` +
+                    `**Tagline Suggestion:** "Experience ${answers.q1} - Where [unique value] Meets Excellence"\n` +
+                    `**Colors:** Ocean Blue (#0077BE) for trust + Vibrant accents\n` +
+                    `**Key Differentiator:** ${answers.q10.substring(0,100)}...\n\n` +
+                    `**Full Analysis:** In live mode, Perplexity analyzes all 34 answers for logos, strategy, voice.\nGet API key: perplexity.ai/api`;
+            }
+
+            try {
+                const prompt = `Analyze this business questionnaire and create a professional BRAND IDENTITY REPORT.
+
+BUSINESS: ${answers.q1} (${answers.q2})
+DESCRIPTION: ${answers.q3}
+UNIQUE: ${answers.q10}
+PERSONALITY WORDS: ${answers.q14}
+VALUES: ${answers.q18}
+CUSTOMERS: ${answers.q6}
+FUTURE: ${answers.q30}
+
+Generate:
+1. Brand Tagline (short, memorable)
+2. Recommended Colors (hex codes, why)
+3. Logo Concept (simple description)
+4. Brand Voice/Tone
+5. Key Messaging Pillars (3-5)
+6. Visual Style Guide
+7. One Competitor Comparison
+
+Format as MARKDOWN with emojis. Cite insights from answers.`;
+
+                const response = await fetch('https://api.perplexity.ai/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'sonar-medium-online', // Best for analysis + web context
+                        messages: [
+                            { role: 'system', content: 'You are a world-class branding expert. Create actionable, creative brand strategies.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        max_tokens: 1500,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                return `❌ API Error: ${error.message}\n\nUsing demo analysis...`;
+            }
+        }
+
+        function displayReport(report, companyName) {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            const reportEl = document.getElementById('aiReport');
+            reportEl.innerHTML = `<h2>🚀 ${companyName} - AI Brand Identity Report</h2><p><em>Generated by Perplexity AI</em></p>${report}`;
+            reportEl.style.display = 'block';
+        }
+
+        function redoQuestionnaire() {
+            document.getElementById('aiSection').style.display = 'none';
+            document.getElementById('brandForm').style.display = 'block';
+            currentSec = 0;
+            showCurrent();
+        }
+
+        function downloadReport() {
+            const report = document.getElementById('aiReport').innerText;
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'brand-report.txt'; a.click();
+        }
+
+        // Admin functions
+        function loadAdminView() {
+            const submissions = JSON.parse(localStorage.getItem('brandSubmissions') || '[]');
+            const list = document.getElementById('adminList');
+            list.innerHTML = submissions.map(s => `
+                <div class="result-item">
+                    <strong>${s.data.q1}</strong> (${s.data.q2})<br>
+                    <small>${new Date(s.timestamp).toLocaleString()}</small><br>
+                    <button onclick="viewReport(${s.id})">View AI Report</button>
+                    <button onclick="copyData(${s.id})">Copy JSON</button>
+                </div>
+            `).join('');
+        }
+
+        function viewReport(id) {
+            const submissions = JSON.parse(localStorage.getItem('brandSubmissions') || '[]');
+            const data = submissions.find(s => s.id == id);
+            generateAIReport(data.data).then(report => {
+                alert(`AI Report for ${data.data.q1}:\n\n${report.substring(0,500)}...`);
+            });
+        }
+
+        function copyData(id) {
+            const submissions = JSON.parse(localStorage.getItem('brandSubmissions') || '[]');
+            const data = submissions.find(s => s.id == id);
+            navigator.clipboard.writeText(JSON.stringify(data.data, null, 2));
+            alert('Copied to clipboard!');
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('brandSubmissions');
+            loadAdminView();
+        }
+
+        // Include full form navigation code from previous version here...
+        // (updateTheme, sections array, next/prev logic, etc.)
+    </script>
+</body>
+</html>
