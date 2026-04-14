@@ -256,29 +256,13 @@ class MoorNoirPortfolio {
       imgContainer.style.width = `${imgW}px`;
       imgContainer.style.height = `${imgH}px`;
 
-      const finalX = OFFSET + sideMargin + col * (imgW + gap);
-      const finalY = colBottomY[col];
+      const x = OFFSET + sideMargin + col * (imgW + gap);
+      const y = colBottomY[col];
 
-      const directions = ['left', 'right', 'top', 'bottom'];
-      const direction = directions[index % 4];
-      const offsetAmount = 400 + Math.random() * 300;
-      let startX = finalX;
-      let startY = finalY;
-      
-      if (direction === 'left') startX = finalX - offsetAmount;
-      else if (direction === 'right') startX = finalX + offsetAmount;
-      else if (direction === 'top') startY = finalY - offsetAmount;
-      else if (direction === 'bottom') startY = finalY + offsetAmount;
+      imgContainer.style.left = `${x}px`;
+      imgContainer.style.top = `${y}px`;
 
-      imgContainer.dataset.finalX = finalX;
-      imgContainer.dataset.finalY = finalY;
-      imgContainer.dataset.startX = startX;
-      imgContainer.dataset.startY = startY;
-
-      imgContainer.style.left = `${startX}px`;
-      imgContainer.style.top = `${startY}px`;
-
-      colBottomY[col] = finalY + imgH + gap;
+      colBottomY[col] = y + imgH + gap;
 
       const img = document.createElement('img');
       img.src = project.image;
@@ -384,45 +368,42 @@ class MoorNoirPortfolio {
   
   animateImages(t) {
     const images = this.galleryImages.querySelectorAll('.gallery-image');
+
+    // Images begin appearing when NOIR starts (letter index 4 = t ≈ 0.28)
+    const imgStartT = 0.28;
+
     const textRect = this.heroText.getBoundingClientRect();
-    const textCenter = textRect.top + textRect.height / 2;
+    const textCenterY = textRect.top + textRect.height / 2;
 
     images.forEach((img, i) => {
-      const delay = i * 0.06;
-      const local = Math.max(0, Math.min(1, (t - delay)));
+      // Stagger each image slightly after NOIR begins spelling
+      const delay = imgStartT + i * 0.04;
+      const local = Math.max(0, Math.min(1, t - delay));
       const ease = 1 - Math.pow(1 - local, 4);
 
-      const finalX = parseFloat(img.dataset.finalX);
-      const finalY = parseFloat(img.dataset.finalY);
-      const startX = parseFloat(img.dataset.startX);
-      const startY = parseFloat(img.dataset.startY);
+      // Scale from nearly invisible (0.04) up to full size
+      const scale = 0.04 + 0.96 * ease;
+      img.style.transform = `scale(${scale})`;
 
-      const x = startX + (finalX - startX) * ease;
-      const y = startY + (finalY - startY) * ease;
-
-      img.style.left = `${x}px`;
-      img.style.top = `${y}px`;
-
-      const scale = 0.05 + (1 - 0.05) * ease;
-      const depth = (1 - ease) * 60;
-      
-      img.style.transform = `scale(${scale}) translateY(${depth}px)`;
-
+      // Base opacity follows progress
       let opacity = ease;
 
-      if (textRect.width > 0) {
+      // Transparency when crossing text — smooth in and out
+      if (textRect.width > 0 && ease > 0.02) {
         const imgRect = img.getBoundingClientRect();
         const imgCenterY = imgRect.top + imgRect.height / 2;
-        const dist = Math.abs(imgCenterY - textCenter);
-        const fadeZone = 200;
+        const distY = Math.abs(imgCenterY - textCenterY);
+        const fadeZone = textRect.height * 0.7 + 70;
 
-        if (dist < fadeZone) {
-          const fade = 1 - dist / fadeZone;
-          opacity *= (1 - fade * 0.65);
+        if (distY < fadeZone) {
+          const raw = 1 - distY / fadeZone;
+          // Smoothstep for gradual in/out, not a hard edge
+          const smoothFade = raw * raw * (3 - 2 * raw);
+          opacity *= 1 - smoothFade * 0.85;
         }
       }
 
-      img.style.opacity = opacity;
+      img.style.opacity = Math.max(0, opacity);
     });
   }
   
@@ -438,13 +419,21 @@ class MoorNoirPortfolio {
     this.animationPhase = 'interactive';
     this.galleryView.classList.add('interactive');
     this.header.classList.add('visible');
-    
+
+    // Snap all images to full opacity and scale, with a brief smooth transition
+    this.galleryImages.querySelectorAll('.gallery-image').forEach(img => {
+      img.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      img.style.opacity = '1';
+      img.style.transform = 'scale(1)';
+      setTimeout(() => { img.style.transition = ''; }, 650);
+    });
+
     this.camera.zoomTarget = 1.015;
     clearTimeout(this.intro.settleTimeout);
     this.intro.settleTimeout = setTimeout(() => {
       this.camera.zoomTarget = 1;
     }, 300);
-    
+
     this.startScreensaverTimer();
     this.startImageBreathing();
   }
