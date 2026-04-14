@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moor Noir — Architecture & Design Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header" id="header">
+    <nav class="nav">
+      <div class="nav-brand">MOOR NOIR</div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#projects" class="nav-link active">PROJECTS</a></li>
+        <li><a href="#about" class="nav-link">ABOUT</a></li>
+        <li><a href="#contact" class="nav-link">CONTACT</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main" id="main">
+    <section class="gallery-view" id="galleryView">
+      <div class="gallery-canvas" id="galleryCanvas">
+        <div class="gallery-images" id="galleryImages"></div>
+        <div class="hero-text" id="heroText">
+          <span class="word word-moor">
+            <span class="letter">M</span>
+            <span class="letter">O</span>
+            <span class="letter">O</span>
+            <span class="letter">R</span>
+          </span>
+          <span class="word word-noir">
+            <span class="letter">N</span>
+            <span class="letter">O</span>
+            <span class="letter">I</span>
+            <span class="letter">R</span>
+          </span>
+        </div>
+      </div>
+      <div class="gallery-controls">
+        <span class="control-hint">Scroll to zoom · Drag to pan</span>
+      </div>
+    </section>
+
+    <section class="detail-view" id="detailView">
+      <button class="close-btn" id="closeBtn" aria-label="Close project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <svg class="progress-ring" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" class="progress-bg"></circle>
+          <circle cx="50" cy="50" r="45" class="progress-bar" id="progressBar"></circle>
+        </svg>
+      </button>
+
+      <div class="detail-content" id="detailContent">
+        <aside class="detail-sidebar">
+          <h1 class="detail-title" id="detailTitle"></h1>
+          <div class="detail-meta" id="detailMeta"></div>
+        </aside>
+
+        <article class="detail-main" id="detailMain"></article>
+      </div>
+    </section>
+
+    <section class="about-view" id="aboutView">
+      <div class="about-content">
+        <h1>About</h1>
+        <p>Moor Noir is an architecture and design studio focused on creating spaces that balance minimalism with warmth. We believe in the power of light, material, and proportion to transform everyday experiences into something extraordinary.</p>
+        <p>Founded in 2018, our practice spans residential, commercial, and cultural projects across Europe and beyond.</p>
+      </div>
+    </section>
+
+    <section class="contact-view" id="contactView">
+      <div class="contact-content">
+        <h1>Contact</h1>
+        <p>For inquiries, please reach us at:</p>
+        <a href="mailto:studio@moornoir.com" class="contact-email">studio@moornoir.com</a>
+      </div>
+    </section>
+  </main>
+
+  <div class="page-overlay" id="pageOverlay"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
