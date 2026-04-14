@@ -416,6 +416,7 @@ class MoorNoirPortfolio {
   
   settleIntro() {
     this.intro.settled = true;
+    this.intro.active = false;
     this.animationPhase = 'interactive';
     this.galleryView.classList.add('interactive');
     this.header.classList.add('visible');
