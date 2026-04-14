@@ -234,16 +234,11 @@ class MoorNoirPortfolio {
   }
   
   createGalleryImages() {
-    const OFFSET = 200;
-    const numCols = 4;
-    const gap = 52;
-    const sideMargin = 20;
-
-    const imgW = (window.innerWidth - sideMargin * 2 - gap * (numCols - 1)) / numCols;
-
+    // Height ratios: same width per column, different heights per image
     const heightRatios = [1.35, 0.70, 1.00, 1.20, 0.65, 1.50, 0.80, 1.10, 0.75, 1.30, 0.90, 1.60];
 
-    const colBottomY = Array(numCols).fill(OFFSET + 90);
+    const grid = document.createElement('div');
+    grid.id = 'imageGrid';
 
     projects.forEach((project, index) => {
       const imgContainer = document.createElement('div');
@@ -251,19 +246,9 @@ class MoorNoirPortfolio {
       imgContainer.dataset.projectId = project.id;
       imgContainer.dataset.index = index;
 
-      const col = index % numCols;
-      const imgH = imgW * heightRatios[index % heightRatios.length];
-
-      imgContainer.style.width = `${imgW}px`;
-      imgContainer.style.height = `${imgH}px`;
-
-      const x = OFFSET + sideMargin + col * (imgW + gap);
-      const y = colBottomY[col];
-
-      imgContainer.style.left = `${x}px`;
-      imgContainer.style.top = `${y}px`;
-
-      colBottomY[col] = y + imgH + gap;
+      // Each image keeps same width (grid column), variable height
+      const ratio = heightRatios[index % heightRatios.length];
+      imgContainer.style.aspectRatio = `1 / ${ratio}`;
 
       const img = document.createElement('img');
       img.src = project.image;
@@ -271,13 +256,15 @@ class MoorNoirPortfolio {
       img.loading = 'lazy';
 
       imgContainer.appendChild(img);
-      this.galleryImages.appendChild(imgContainer);
+      grid.appendChild(imgContainer);
 
       imgContainer.addEventListener('click', () => {
         if (this.hasDragged) return;
         this.onGalleryImageClick(project, imgContainer);
       });
     });
+
+    this.galleryImages.appendChild(grid);
   }
   
   bindEvents() {
