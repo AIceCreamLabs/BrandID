@@ -202,10 +202,11 @@ class MoorNoirPortfolio {
     this.breathingImages = new Map();
     
     this.intro = {
-      progress: 0,
       active: true,
       settled: false,
-      settleTimeout: null
+      settleTimeout: null,
+      startTime: null,
+      duration: 5500
     };
     
     this.isDetailOpen = false;
@@ -334,18 +335,17 @@ class MoorNoirPortfolio {
   updateIntro() {
     if (!this.intro.active) return;
 
-    this.intro.progress += 0.0018;
-    
-    const tRaw = Math.min(1, this.intro.progress);
-    const t = tRaw < 0.5
-      ? 4 * tRaw * tRaw * tRaw
-      : 1 - Math.pow(-2 * tRaw + 2, 3) / 2;
+    if (!this.intro.startTime) this.intro.startTime = performance.now();
+
+    const rawProgress = Math.min(1, (performance.now() - this.intro.startTime) / this.intro.duration);
+    // easeOutCubic for smooth deceleration
+    const t = 1 - Math.pow(1 - rawProgress, 3);
 
     this.animateLetters(t);
     this.animateImages(t);
-    this.animateCameraIntro(t);
+    this.animateCameraIntro(rawProgress);
 
-    if (this.intro.progress >= 1 && !this.intro.settled) {
+    if (rawProgress >= 1 && !this.intro.settled) {
       this.settleIntro();
     }
   }
@@ -355,55 +355,71 @@ class MoorNoirPortfolio {
       ...this.heroText.querySelectorAll('.word-moor .letter'),
       ...this.heroText.querySelectorAll('.word-noir .letter')
     ];
+    const total = allLetters.length;
 
     allLetters.forEach((letter, i) => {
-      const delay = i * 0.07;
-      const local = Math.max(0, Math.min(1, (t - delay)));
-      const ease = 1 - Math.pow(1 - local, 5);
+      // Spread letters across the first 65% of animation
+      const delay = (i / total) * 0.65;
+      const local = Math.max(0, Math.min(1, (t - delay) / 0.12));
+      const ease = 1 - Math.pow(1 - local, 3);
 
       letter.style.opacity = ease;
-      letter.style.transform = `translateY(${(1 - ease) * 80}px) scale(${0.85 + ease * 0.15})`;
+      letter.style.transform = `translateY(${(1 - ease) * 22}px) scale(${0.88 + ease * 0.12})`;
     });
   }
-  
+
   animateImages(t) {
     const images = this.galleryImages.querySelectorAll('.gallery-image');
-
-    // Images begin appearing when NOIR starts (letter index 4 = t ≈ 0.28)
-    const imgStartT = 0.28;
-
+    const total = images.length;
     const textRect = this.heroText.getBoundingClientRect();
-    const textCenterY = textRect.top + textRect.height / 2;
 
     images.forEach((img, i) => {
-      // Stagger each image slightly after NOIR begins spelling
-      const delay = imgStartT + i * 0.04;
-      const local = Math.max(0, Math.min(1, t - delay));
-      const ease = 1 - Math.pow(1 - local, 4);
+      // Stagger images across 30% of animation, starting immediately
+      const delay = (i / total) * 0.30;
+      const imgT = Math.max(0, t - delay);
 
-      // Scale from nearly invisible (0.04) up to full size
-      const scale = 0.04 + 0.96 * ease;
-      img.style.transform = `scale(${scale})`;
+      let scale, opacity;
 
-      // Base opacity follows progress
-      let opacity = ease;
+      if (imgT < 0.5) {
+        // Phase 1: Fast scale 5% → 85%
+        const p = imgT / 0.5;
+        const ease = 1 - Math.pow(1 - p, 3);
+        scale = 0.05 + ease * 0.80;
+        opacity = imgT > 0 ? 1 : 0;
 
-      // Transparency when crossing text — smooth in and out
-      if (textRect.width > 0 && ease > 0.02) {
-        const imgRect = img.getBoundingClientRect();
-        const imgCenterY = imgRect.top + imgRect.height / 2;
-        const distY = Math.abs(imgCenterY - textCenterY);
-        const fadeZone = textRect.height * 0.7 + 70;
+      } else if (imgT < 0.72) {
+        // Phase 2: Pass-through — images crossing text become transparent
+        const p = (imgT - 0.5) / 0.22;
+        scale = 0.85;
 
-        if (distY < fadeZone) {
-          const raw = 1 - distY / fadeZone;
-          // Smoothstep for gradual in/out, not a hard edge
-          const smoothFade = raw * raw * (3 - 2 * raw);
-          opacity *= 1 - smoothFade * 0.85;
+        if (textRect.width > 0) {
+          const imgRect = img.getBoundingClientRect();
+          const imgCenterX = imgRect.left + imgRect.width / 2;
+          const imgCenterY = imgRect.top + imgRect.height / 2;
+          const inX = imgCenterX > textRect.left - 20 && imgCenterX < textRect.right + 20;
+          const inY = imgCenterY > textRect.top - 30 && imgCenterY < textRect.bottom + 30;
+
+          if (inX && inY) {
+            // Cosine wave: 1 → 0.12 → 1 over this phase
+            const wave = Math.cos(p * Math.PI);
+            opacity = Math.max(0.12, (wave + 1) / 2 * 0.88 + 0.12);
+          } else {
+            opacity = 1;
+          }
+        } else {
+          opacity = 1;
         }
+
+      } else {
+        // Phase 3: Slow final expansion 85% → 100%
+        const p = (imgT - 0.72) / 0.28;
+        const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+        scale = 0.85 + ease * 0.15;
+        opacity = 1;
       }
 
-      img.style.opacity = Math.max(0, opacity);
+      img.style.transform = `scale(${Math.min(1, scale)})`;
+      img.style.opacity = Math.max(0, Math.min(1, opacity));
     });
   }
   
