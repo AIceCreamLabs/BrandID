@@ -423,11 +423,12 @@ class MoorNoirPortfolio {
     });
   }
   
-  animateCameraIntro(t) {
-    this.camera.zoom = 0.3 + t * 0.7;
-    this.camera.position.x = (1 - t) * 200;
-    this.camera.position.y = (1 - t) * 100;
-    this.camera.rotation = (1 - t) * 0.003;
+  animateCameraIntro() {
+    // Keep zoom at 1 — grid stays full-width, images scale individually
+    this.camera.zoom = 1;
+    this.camera.position.x = 0;
+    this.camera.position.y = 0;
+    this.camera.rotation = 0;
   }
   
   settleIntro() {
