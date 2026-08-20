@@ -143,31 +143,27 @@ function computeState(progress, velocity, velocitySign, mouse) {
   };
 }
 
-function ArcText({ text, radius = 150, spread = 46 }) {
+function ArcText({ text }) {
   const chars = text.split('');
-  const step = chars.length > 1 ? spread / (chars.length - 1) : 0;
-  const start = -spread / 2;
   return (
-    <div style={{ position: 'relative', width: 0, height: 0 }}>
+    <div style={{ display: 'flex' }}>
       {chars.map((ch, i) => (
         <span
           key={i}
           className="neon-letter"
           style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
             display: 'inline-block',
-            transform: `rotate(${start + step * i}deg) translateY(-${radius}px)`,
-            transformOrigin: '0 0',
             opacity: 0,
             fontFamily: 'var(--font-stalinist), sans-serif',
-            fontSize: '9px',
-            letterSpacing: '0.14em',
-            color: 'rgba(200,150,115,0.42)',
+            fontStyle: 'normal',
+            fontSize: '17px',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,130,40,0.92)',
+            textShadow: '0 0 18px rgba(255,120,40,0.55)',
           }}
         >
-          {ch === ' ' ? ' ' : ch}
+          {ch === ' ' ? ' ' : ch}
         </span>
       ))}
     </div>
@@ -756,7 +752,7 @@ export default function Hero() {
           calloutTextGlowRef.current.style.opacity = t.callouts;
 
           const pf = projectToScreen(init.fabricPoint, camera, cssW, cssH);
-          const fx2 = pf.x + 150;
+          const fx2 = pf.x - 150;
           const fy2 = pf.y - 55;
           calloutDotFabricRef.current.setAttribute('cx', pf.x);
           calloutDotFabricRef.current.setAttribute('cy', pf.y);
@@ -764,7 +760,8 @@ export default function Hero() {
           calloutLineFabricRef.current.setAttribute('y1', pf.y);
           calloutLineFabricRef.current.setAttribute('x2', fx2);
           calloutLineFabricRef.current.setAttribute('y2', fy2);
-          calloutTextFabricRef.current.style.left = fx2 + 8 + 'px';
+          calloutTextFabricRef.current.style.left = 'auto';
+          calloutTextFabricRef.current.style.right = cssW - fx2 + 8 + 'px';
           calloutTextFabricRef.current.style.top = fy2 - 18 + 'px';
 
           const pg = projectToScreen(init.glowPoint, camera, cssW, cssH);
@@ -957,7 +954,7 @@ export default function Hero() {
           <div style={{ width: '1px', height: '40px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.3), transparent)' }} />
         </div>
 
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none" style={{ paddingBottom: '30%' }}>
+        <div className="absolute pointer-events-none" style={{ left: '35%', top: '46%' }}>
           <ArcText text="NEON ORANGE" />
         </div>
 
@@ -1058,7 +1055,7 @@ export default function Hero() {
         <div
           ref={calloutTextFabricRef}
           className="absolute pointer-events-none"
-          style={{ opacity: 0, fontFamily: 'var(--font-stalinist), sans-serif', fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, whiteSpace: 'nowrap' }}
+          style={{ opacity: 0, fontFamily: 'var(--font-stalinist), sans-serif', fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'right', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, whiteSpace: 'nowrap' }}
         >
           Premium Fabric<br />
           <span style={{ color: 'rgba(255,255,255,0.32)' }}>Structured Fit</span>
@@ -1068,8 +1065,8 @@ export default function Hero() {
           className="absolute pointer-events-none"
           style={{ opacity: 0, fontFamily: 'var(--font-stalinist), sans-serif', fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, whiteSpace: 'nowrap' }}
         >
-          NEON ORANGE<br />
-          <span style={{ color: 'rgba(255,150,80,0.65)' }}>UNDERBRIM</span>
+          <span style={{ fontSize: '15px', fontStyle: 'normal', fontWeight: 500, letterSpacing: '0.12em', color: 'rgba(255,140,50,0.95)' }}>NEON ORANGE</span><br />
+          UNDERBRIM
         </div>
 
         <div
