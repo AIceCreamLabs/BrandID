@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>POST ARCHIVE FACTION — S26</title>
+<meta name="theme-color" content="#060606">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+html{font-size:calc(10000vw/1440);scroll-behavior:auto}
+:root{--f:'Inter',sans-serif;--c0:#060606;--c1:#fff;--cb:rgba(255,255,255,.07);--cd:rgba(255,255,255,.28);--ca:#D4541A;--eo:cubic-bezier(.16,1,.3,1);--eh:cubic-bezier(.3,0,.1,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body,div,span,h1,h2,h3,p,a,img,ul,li,section,header,footer{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}
+ul{list-style:none}a{text-decoration:none;outline:none}img{max-width:100%;height:auto;display:block}
+button{cursor:none;border:none;background:none;padding:0}*{-webkit-tap-highlight-color:transparent}
+html,body{width:100%;overflow:hidden;height:100%;background:var(--c0)}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;cursor:none}
+
+/* ── CURSOR ── */
+.cur{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:difference;will-change:transform}
+.cur__d{width:8px;height:8px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);transition:width .4s var(--eo),height .4s var(--eo)}
+.cur.hov .cur__d{width:.36rem;height:.36rem;background:transparent;box-shadow:inset 0 0 0 1px #fff}
+.cur.lnk .cur__d{width:.13rem;height:.13rem}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:7000;display:flex;align-items:center;justify-content:space-between;padding:20px 28px;pointer-events:none}
+.nav__brand{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--c1);pointer-events:auto}
+.nav__links{display:flex;gap:26px;pointer-events:auto}
+.nav__l{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);transition:color .35s;position:relative}
+.nav__l::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--c1);transition:width .4s var(--eo)}
+.nav__l:hover{color:var(--c1)}
+.nav__l:hover::after{width:100%}
+.nav__l.active{color:var(--c1)}.nav__l.active::after{width:100%}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);transition:color .35s;pointer-events:auto}
+.cart-btn:hover{color:var(--c1)}
+.cart-n{display:none;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--ca);color:#fff;font-size:9px;font-weight:900}
+.cart-n.on{display:flex}
+
+/* ── TOGGLE ── */
+.tog{position:fixed;bottom:24px;left:28px;z-index:8100;display:flex;align-items:center;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.45);backdrop-filter:blur(8px)}
+.tog__b{padding:8px 16px;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);transition:color .35s,background .35s}
+.tog__b.on{color:var(--c0);background:var(--c1)}
+.tog__s{width:1px;height:16px;background:rgba(255,255,255,.3)}
+
+/* ── PRELOADER ── */
+.pre{position:fixed;inset:0;z-index:8000;background:var(--c0);display:flex;flex-direction:column;justify-content:flex-end;clip-path:inset(0 0 0 0);will-change:clip-path}
+.pre__b{display:grid;grid-template-columns:1fr 1fr;align-items:flex-end;padding:.32rem .32rem .28rem}
+.pre__lbl{font-size:.1rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--cd);transform:translateY(14px);opacity:0}
+.pre__n{font-size:.56rem;font-weight:900;color:var(--c1);letter-spacing:-.05em;line-height:1;text-align:right;transform:translateY(14px);opacity:0}
+.pre__rail{position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--cb)}
+.pre__fill{height:1px;width:0;background:var(--cd)}
+
+/* ── HERO SPHERE ── */
+.hero{position:fixed;inset:0;background:var(--c0);cursor:grab;overflow:hidden}
+.hero.drag{cursor:grabbing}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(255,255,255,.03) 0%,transparent 70%);pointer-events:none}
+.rings{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.rings span{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.04)}
+.hud{position:absolute;font-size:.082rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.18);pointer-events:none;z-index:10}
+.hud--tl{top:66px;left:.24rem;line-height:1.7}
+.hud--tr{top:66px;right:.24rem;text-align:right;line-height:1.7}
+.hud--bl{bottom:.22rem;left:.24rem}
+.legend{position:absolute;bottom:.22rem;right:.24rem;display:flex;flex-direction:column;gap:7px;pointer-events:none;z-index:10}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:.068rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.22)}
+.leg-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.leg-dot--m{background:#D4541A}.leg-dot--a{background:#2563EB}.leg-dot--b{background:#16A34A}
+.scroll-hint{position:absolute;bottom:.2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.1rem;pointer-events:none;opacity:0}
+.sh__lbl{font-size:.082rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.28)}
+.sh__line{width:1px;height:.38rem;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+.sh__line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:rgba(255,255,255,.4);animation:sdrop 1.6s var(--eo) infinite}
+@keyframes sdrop{0%{top:-100%}100%{top:200%}}
+#sphere-scene{position:absolute;inset:0;overflow:visible}
+.tile{position:absolute;cursor:pointer;will-change:transform,opacity,filter;transform-origin:center center}
+.tile__img{width:100%;border:1px solid rgba(255,255,255,.07);overflow:hidden;position:relative;background:#111;transition:border-color .3s}
+.tile__img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;filter:saturate(.62) brightness(.52) contrast(1.2)}
+.tile__img::after{content:'';position:absolute;inset:0;z-index:2;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");mix-blend-mode:overlay;pointer-events:none}
+.tile__lbl{margin-top:.04rem;font-size:.062rem;letter-spacing:.22em;text-transform:uppercase;text-align:center;pointer-events:none}
+.tile[data-cat=model]:hover .tile__img{border-color:rgba(212,84,26,.55)}
+.tile[data-cat=aesthetic]:hover .tile__img{border-color:rgba(37,99,235,.55)}
+.tile[data-cat=about]:hover .tile__img{border-color:rgba(22,163,74,.55)}
+.tile[data-cat=model] .tile__lbl{color:rgba(212,84,26,.65)}
+.tile[data-cat=aesthetic] .tile__lbl{color:rgba(37,99,235,.65)}
+.tile[data-cat=about] .tile__lbl{color:rgba(22,163,74,.65)}
+.hero-brand{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);font-size:26px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.88);white-space:nowrap;pointer-events:none;z-index:8200;user-select:none}
+
+/* ── CLOSE BTN (shared) ── */
+.x-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid var(--cb);border-radius:50%;transition:border-color .35s,transform .4s var(--eo)}
+.x-btn:hover{border-color:rgba(255,255,255,.35);transform:rotate(90deg)}
+.x-btn svg{width:12px;height:12px;stroke:#fff;stroke-width:1.5;fill:none}
+
+/* ── LOOK MODAL ── */
+.look-ov{position:fixed;inset:0;z-index:600;background:var(--c0);display:none;clip-path:inset(100% 0 0 0);will-change:clip-path}
+.look-ov__inner{width:100%;height:100%;display:grid;grid-template-columns:58fr 42fr}
+.look-ov__img{position:relative;overflow:hidden}
+.look-ov__img-clip{position:absolute;inset:0;clip-path:inset(0 0 100% 0);will-change:clip-path}
+.look-ov__img-clip img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.85) brightness(.92) contrast(1.06)}
+.look-ov__tag{position:absolute;bottom:24px;left:28px;font-size:10px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.look-ov__side{display:flex;flex-direction:column;border-left:1px solid var(--cb);overflow-y:auto}
+.look-ov__head{padding:28px 32px 20px;border-bottom:1px solid var(--cb);flex-shrink:0}
+.look-ov__sub{font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);margin-bottom:10px;transform:translateY(20px);opacity:0}
+.look-ov__title{font-size:24px;font-weight:900;color:var(--c1);letter-spacing:-.03em;line-height:1;transform:translateY(20px);opacity:0}
+.look-ov__shop-lbl{padding:20px 32px 10px;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);flex-shrink:0}
+.look-ov__pieces{flex:1;overflow-y:auto;padding:0 32px 28px}
+.lp{display:grid;grid-template-columns:58px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--cb);align-items:center;cursor:none;transition:background .22s}
+.lp:hover{background:rgba(255,255,255,.024);margin:0 -32px;padding-left:32px;padding-right:32px}
+.lp__thumb{aspect-ratio:2/3;overflow:hidden;border:1px solid var(--cb);background:#111;flex-shrink:0}
+.lp__thumb img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.6) brightness(.62) contrast(1.14);transition:filter .4s}
+.lp:hover .lp__thumb img{filter:saturate(.82) brightness(.88) contrast(1.06)}
+.lp__code{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--cd);margin-bottom:4px}
+.lp__name{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c1);line-height:1.3;margin-bottom:6px}
+.lp__price{font-size:13px;font-weight:700;color:var(--ca)}
+.lp__view{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.18);white-space:nowrap;transition:color .3s}
+.lp:hover .lp__view{color:var(--c1)}
+.look-ov__close{position:absolute;top:22px;right:22px;z-index:10}
+
+/* ── PRODUCT MODAL ── */
+.pmod{position:fixed;inset:0;z-index:700;background:var(--c0);display:none;clip-path:inset(50% 50% 50% 50%);will-change:clip-path}
+.pmod__inner{width:100%;height:100%;display:grid;grid-template-columns:58fr 42fr}
+.pmod__img{position:relative;overflow:hidden}
+.pmod__img-clip{position:absolute;inset:0;clip-path:inset(0 0 100% 0);will-change:clip-path}
+.pmod__img-clip img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.8) brightness(.9) contrast(1.06)}
+.pmod__seas{position:absolute;bottom:24px;left:28px;font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.pmod__info{display:flex;flex-direction:column;border-left:1px solid var(--cb);overflow-y:auto}
+.pmod__head{padding:28px 32px 22px;border-bottom:1px solid var(--cb)}
+.pmod__code{font-size:10px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);margin-bottom:10px;transform:translateY(20px);opacity:0}
+.pmod__name{font-size:26px;font-weight:900;color:var(--c1);letter-spacing:-.03em;line-height:1;margin-bottom:12px;transform:translateY(20px);opacity:0}
+.pmod__price{font-size:20px;font-weight:700;color:var(--ca);transform:translateY(20px);opacity:0}
+.pmod__vars-wrap{padding:20px 32px 0}
+.pmod__vars-lbl{font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);margin-bottom:10px}
+.pmod__vars{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:20px}
+.pvar{overflow:hidden;position:relative;cursor:none;border:1px solid var(--cb);transition:border-color .3s;background:#111;aspect-ratio:2/3}
+.pvar img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.6) brightness(.6) contrast(1.1);transition:filter .4s}
+.pvar:hover img,.pvar.on img{filter:saturate(.85) brightness(.88)}
+.pvar.on{border-color:var(--ca)}
+.pvar::after{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");mix-blend-mode:overlay;pointer-events:none;z-index:2}
+.pmod__body{flex:1;padding:0 32px 28px;display:flex;flex-direction:column;justify-content:flex-end;border-top:1px solid var(--cb)}
+.spec-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
+.spec-row span{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;transform:translateY(110%)}
+.spec-row span:first-child{color:var(--cd)}
+.spec-row span:last-child{color:rgba(255,255,255,.72)}
+.pmod__sz-lbl{font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);margin-bottom:10px;margin-top:18px}
+.pmod__sizes{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.sz-btn{padding:7px 13px;border:1px solid var(--cb);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cd);transition:border-color .3s,color .3s,background .3s}
+.sz-btn:hover{border-color:rgba(255,255,255,.3);color:var(--c1)}
+.sz-btn.on{border-color:var(--c1);color:var(--c0);background:var(--c1)}
+.atb{width:100%;padding:16px 22px;background:var(--ca);color:#fff;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;transition:opacity .3s;display:flex;align-items:center;justify-content:space-between;transform:translateY(20px);opacity:0}
+.atb:hover{opacity:.82}
+.pmod__close{position:absolute;top:22px;right:22px;z-index:10}
+
+/* ── COLLECTION CHOOSER ── */
+.col-ch{position:fixed;inset:0;z-index:620;background:var(--c0);display:none;clip-path:inset(50% 50% 50% 50%);will-change:clip-path;flex-direction:column;justify-content:center;align-items:center}
+.col-ch.visible{display:flex}
+.col-ch__hd{position:absolute;top:66px;left:.24rem;font-size:.082rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.col-ch__title{font-size:.48rem;font-weight:900;color:var(--c1);letter-spacing:-.05em;line-height:.88;margin-bottom:.36rem;text-align:center;transform:translateY(30px);opacity:0}
+.col-ch__grid{display:grid;grid-template-columns:1fr 1fr;gap:.16rem;width:min(860px,80vw);transform:translateY(30px);opacity:0}
+.col-card{border:1px solid var(--cb);padding:.28rem;cursor:none;transition:border-color .35s,background .35s;position:relative;overflow:hidden}
+.col-card:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.025)}
+.col-card__num{font-size:.42rem;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:-.06em;line-height:1;margin-bottom:.06rem}
+.col-card__name{font-size:.2rem;font-weight:900;color:var(--c1);letter-spacing:-.03em;line-height:1;margin-bottom:.06rem}
+.col-card__sub{font-size:.09rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--cd)}
+.col-card__count{font-size:.08rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:.12rem}
+.col-card__arrow{position:absolute;bottom:.18rem;right:.2rem;font-size:.13rem;color:rgba(255,255,255,.18);transition:color .35s,transform .35s var(--eo)}
+.col-card:hover .col-card__arrow{color:var(--c1);transform:translateX(4px)}
+.col-ch__close{position:absolute;top:22px;right:22px}
+
+/* ── INFINITE CANVAS ── */
+.inf-cv{position:fixed;inset:0;z-index:640;background:var(--c0);display:none;overflow:hidden;cursor:grab}
+.inf-cv.visible{display:block}
+.inf-cv.drag{cursor:grabbing}
+.inf-world{position:absolute;top:0;left:0;will-change:transform;transform-origin:0 0}
+.inf-tile{position:absolute;cursor:none;overflow:hidden;border:1px solid rgba(255,255,255,.06);transition:border-color .3s}
+.inf-tile:hover{border-color:rgba(255,255,255,.24)}
+.inf-tile.clickable:hover{border-color:rgba(212,84,26,.4)}
+.inf-tile img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.6) brightness(.52) contrast(1.2);transition:filter .4s}
+.inf-tile:hover img{filter:saturate(.82) brightness(.78) contrast(1.1)}
+.inf-tile__lbl{position:absolute;bottom:8px;left:10px;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);pointer-events:none}
+.inf-tile__price{position:absolute;bottom:8px;right:10px;font-size:10px;font-weight:700;color:var(--ca);pointer-events:none;opacity:0;transition:opacity .3s}
+.inf-tile.clickable:hover .inf-tile__price{opacity:1}
+.inf-cv__hud{position:absolute;top:66px;left:28px;z-index:10;pointer-events:none}
+.inf-cv__col-name{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
+.inf-cv__hint{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:4px}
+.inf-cv__close{position:absolute;top:22px;right:22px;z-index:10}
+.inf-cv__drag-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.2);pointer-events:none;transition:opacity .6s}
+
+/* ── ABOUT OVERLAY ── */
+.about-ov{position:fixed;inset:0;z-index:660;background:var(--c0);display:none;clip-path:inset(0 100% 0 0);will-change:clip-path}
+.about-ov__inner{width:100%;height:100%;display:grid;grid-template-columns:52fr 48fr}
+.about-ov__img-side{position:relative;overflow:hidden}
+.about-ov__img-clip{position:absolute;inset:0;clip-path:inset(0 100% 0 0);will-change:clip-path}
+.about-ov__img-clip img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.78) brightness(.88) contrast(1.08)}
+.about-ov__content{display:flex;flex-direction:column;justify-content:space-between;padding:.3rem;border-left:1px solid var(--cb);overflow-y:auto}
+.about-ov__top{display:flex;justify-content:space-between;padding-bottom:.1rem;border-bottom:1px solid var(--cb);margin-bottom:.28rem;flex-shrink:0}
+.about-ov__top span{font-size:.07rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.about-ov__hl{font-size:.42rem;font-weight:900;color:var(--c1);letter-spacing:-.05em;line-height:.9;margin-bottom:.22rem;transform:translateY(30px);opacity:0}
+.about-ov__body{font-size:.14rem;font-weight:400;color:rgba(255,255,255,.38);line-height:1.78;transform:translateY(20px);opacity:0}
+.about-ov__img2{margin:.26rem 0;overflow:hidden;max-height:240px;border:1px solid var(--cb);transform:translateY(20px);opacity:0}
+.about-ov__img2 img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.72) brightness(.85)}
+.about-ov__specs{border-top:1px solid var(--cb);flex-shrink:0}
+.about-spec{display:flex;justify-content:space-between;align-items:center;padding:.09rem 0;border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
+.about-spec span{font-size:.092rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;transform:translateY(110%)}
+.about-spec span:first-child{color:rgba(255,255,255,.26)}
+.about-spec span:last-child{color:rgba(255,255,255,.65)}
+.about-ov__close{position:absolute;top:22px;right:22px;z-index:10}
+
+/* ── CART ── */
+.cart-veil{position:fixed;inset:0;z-index:799;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);display:none}
+.cart-veil.on{display:block}
+.cart-dr{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);z-index:800;background:var(--c0);border-left:1px solid var(--cb);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .6s var(--eo)}
+.cart-dr.on{transform:translateX(0)}
+.cart-hd{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--cb)}
+.cart-hd__t{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--c1)}
+.cart-body{flex:1;overflow-y:auto;padding:20px 24px}
+.cart-empty{text-align:center;padding:60px 0;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--cd)}
+.cart-item{display:grid;grid-template-columns:50px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--cb);align-items:start}
+.cart-item__th{aspect-ratio:2/3;overflow:hidden;border:1px solid var(--cb);background:#111}
+.cart-item__th img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.7) brightness(.75)}
+.cart-item__name{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c1);margin-bottom:3px}
+.cart-item__meta{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--cd)}
+.cart-item__bot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.cart-item__price{font-size:13px;font-weight:700;color:var(--ca)}
+.cart-rm{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:1px solid var(--cb);border-radius:50%;transition:border-color .3s}
+.cart-rm:hover{border-color:rgba(255,255,255,.4)}
+.cart-rm svg{width:9px;height:9px;stroke:#fff;stroke-width:1.8;fill:none}
+.cart-ft{padding:20px 24px;border-top:1px solid var(--cb)}
+.cart-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.cart-total span:first-child{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--cd)}
+.cart-total span:last-child{font-size:22px;font-weight:900;color:var(--c1);letter-spacing:-.02em}
+.checkout{width:100%;padding:14px 22px;background:var(--c1);color:var(--c0);font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;transition:opacity .3s;display:flex;align-items:center;justify-content:space-between}
+.checkout:hover{opacity:.82}
+
+/* ── FOOTER ── */
+.ft{position:fixed;bottom:0;left:0;right:0;z-index:100;pointer-events:none;display:flex;justify-content:center;padding-bottom:8px}
+.ft__copy{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.1)}
+
+/* ── LOOKBOOK ── */
+.lkb{position:fixed;inset:0;z-index:610;background:var(--c0);display:none;overflow:hidden;cursor:grab}
+.lkb.visible{display:block}
+.lkb.dragging{cursor:grabbing}
+.lkb__track{position:absolute;top:0;left:0;height:100%;display:flex;will-change:transform;transform-origin:0 0}
+.lkb__panel{position:relative;width:100vw;height:100vh;flex-shrink:0;display:grid;grid-template-columns:58fr 42fr}
+.lkb__img-side{position:relative;overflow-y:auto}
+.lkb__img-side img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:center top;filter:saturate(.75) brightness(.85) contrast(1.08);transition:filter .6s}
+.lkb__ghost-n{position:sticky;bottom:-0.06rem;left:0.18rem;font-size:2.2rem;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:-.1em;line-height:1;pointer-events:none;user-select:none}
+.lkb__info{display:flex;flex-direction:column;border-left:1px solid var(--cb);padding:0;position:relative;overflow-y:auto}
+.lkb__info-top{padding:.28rem .32rem .22rem;border-bottom:1px solid var(--cb);flex-shrink:0}
+.lkb__season-tag{font-size:.072rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.lkb__info-mid{flex:1;display:flex;flex-direction:column;justify-content:center;padding:.28rem .32rem}
+.lkb__look-label{font-size:.082rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--cd);margin-bottom:.1rem}
+.lkb__look-title{font-size:.52rem;font-weight:900;color:var(--c1);letter-spacing:-.05em;line-height:.88}
+.lkb__info-bot{padding:.2rem .32rem .78rem;border-top:1px solid var(--cb);flex-shrink:0}
+.lkb__pieces-hd{font-size:.072rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:.12rem}
+.lkb__pieces{display:flex;flex-direction:column;gap:2px;margin-bottom:.18rem}
+.lkb__piece{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.12rem;padding:.1rem .12rem;border:1px solid var(--cb);cursor:none;transition:border-color .3s,background .3s}
+.lkb__piece:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.025)}
+.lkb__piece-thumb{width:.32rem;aspect-ratio:2/3;overflow:hidden;border:1px solid var(--cb);background:#111;flex-shrink:0}
+.lkb__piece-thumb img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.6) brightness(.62) contrast(1.14);transition:filter .4s}
+.lkb__piece:hover .lkb__piece-thumb img{filter:saturate(.82) brightness(.88) contrast(1.06)}
+.lkb__piece-code{display:block;font-size:.066rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cd);margin-bottom:.02rem}
+.lkb__piece-name{font-size:.092rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c1)}
+.lkb__piece-price{font-size:.1rem;font-weight:700;color:var(--ca);white-space:nowrap}
+.lkb__shop-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:.14rem .16rem;background:var(--c1);color:var(--c0);font-size:.085rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;transition:opacity .3s;cursor:none}
+.lkb__shop-btn:hover{opacity:.82}
+/* HUD */
+.lkb__hud{position:absolute;top:66px;left:26px;z-index:10;pointer-events:none}
+.lkb__hud-brand{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.lkb__hud-sub{font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:3px}
+/* counter + progress */
+.lkb__ctr{position:absolute;top:66px;right:22px;z-index:10;pointer-events:none;text-align:right}
+.lkb__ctr-n{font-size:11px;font-weight:900;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:6px}
+.lkb__prog{width:72px;height:1px;background:rgba(255,255,255,.1);margin-left:auto}
+.lkb__prog-fill{height:1px;background:rgba(255,255,255,.45);transition:width .55s var(--eo)}
+/* nav arrows */
+.lkb__arrows{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:.1rem}
+.lkb__arr{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.4);font-size:13px;letter-spacing:0;transition:border-color .3s,color .3s}
+.lkb__arr:hover{border-color:rgba(255,255,255,.5);color:var(--c1)}
+.lkb__arr:disabled{opacity:.2;pointer-events:none}
+.lkb__dots{display:flex;gap:5px;align-items:center}
+.lkb__dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);transition:background .4s,transform .4s}
+.lkb__dot.on{background:rgba(255,255,255,.6);transform:scale(1.35)}
+.lkb__close{position:absolute;bottom:26px;right:22px;z-index:10}
+/* drag hint */
+.lkb__drag-hint{position:absolute;bottom:26px;left:26px;font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.2);pointer-events:none;transition:opacity .6s}
+/* mobile lookbook */
+@media(max-width:768px){
+  .lkb__panel{grid-template-columns:1fr;grid-template-rows:52vh 1fr}
+  .lkb__info{border-left:none;border-top:1px solid var(--cb)}
+  .lkb__hud{top:50px}
+  .lkb__ctr{top:50px}
+  .lkb__ghost-n{font-size:1.4rem}
+  .lkb__look-title{font-size:.38rem}
+  .lkb__info-mid{padding:.16rem .2rem}
+  .lkb__info-top{padding:.16rem .2rem .12rem}
+  .lkb__info-bot{padding:.14rem .2rem 90px}
+  .lkb__arrows{bottom:16px}
+  .lkb__close{bottom:16px}
+  .lkb__drag-hint{display:none}
+}
+
+/* ── SHOP OVERLAY ── */
+.shop-ov{position:fixed;inset:0;z-index:580;background:var(--c0);display:none;flex-direction:column;clip-path:inset(100% 0 0 0);will-change:clip-path}
+.shop-ov.visible{display:flex}
+.shop-ov__bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:74px 28px 18px;border-bottom:1px solid var(--cb)}
+.shop-ov__title{font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--c1)}
+.shop-ov__filters{display:flex;gap:6px}
+.sf{padding:6px 14px;border:1px solid var(--cb);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);transition:border-color .3s,color .3s,background .3s}
+.sf.on{border-color:var(--c1);color:var(--c0);background:var(--c1)}
+.sf:hover:not(.on){border-color:rgba(255,255,255,.3);color:var(--c1)}
+.shop-ov__body{flex:1;overflow-y:auto;padding:28px}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.shop-card{position:relative;overflow:hidden;cursor:none;background:#0d0d0d;aspect-ratio:2/3;border:1px solid rgba(255,255,255,.04)}
+.shop-card__img{position:absolute;inset:0}
+.shop-card__img img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.55) brightness(.48) contrast(1.2);transition:filter .55s var(--eo),transform .7s var(--eo)}
+.shop-card:hover .shop-card__img img{filter:saturate(.85) brightness(.82) contrast(1.05);transform:scale(1.04)}
+.shop-card__clip{position:absolute;inset:0;clip-path:inset(100% 0 0 0);will-change:clip-path;transition:clip-path .55s var(--eo)}
+.shop-card:hover .shop-card__clip{clip-path:inset(0% 0 0 0)}
+.shop-card__info{position:absolute;bottom:0;left:0;right:0;padding:18px 16px 16px;background:linear-gradient(0deg,rgba(0,0,0,.88) 0%,transparent 100%)}
+.shop-card__code{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:5px}
+.shop-card__name{font-size:13px;font-weight:900;letter-spacing:-.01em;color:var(--c1);line-height:1.2;margin-bottom:4px}
+.shop-card__row{display:flex;align-items:center;justify-content:space-between}
+.shop-card__price{font-size:13px;font-weight:700;color:var(--ca)}
+.shop-card__status{font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.shop-card__status.sold{color:rgba(255,80,80,.6)}
+.shop-card__num{position:absolute;top:12px;left:14px;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);pointer-events:none}
+.shop-ov__close{position:absolute;top:18px;right:22px;z-index:10}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .nav{padding:14px 16px}
+  .nav__brand{font-size:9px}
+  .nav__links{gap:16px}
+  .nav__l{font-size:9px}
+  .hero-brand{font-size:14px!important}
+  .tog{bottom:16px;left:16px}
+  .tog__b{padding:7px 12px;font-size:11px}
+  .hud,.legend{display:none}
+  .look-ov__inner{grid-template-columns:1fr}
+  .look-ov__img{height:50vh;position:relative}
+  .look-ov__img-clip{position:absolute;inset:0}
+  .look-ov__side{border-left:none;border-top:1px solid var(--cb)}
+  .pmod__inner{grid-template-columns:1fr}
+  .pmod__img{height:48vh;position:relative}
+  .pmod__img-clip{position:absolute;inset:0}
+  .pmod__info{border-left:none;border-top:1px solid var(--cb)}
+  .about-ov__inner{grid-template-columns:1fr}
+  .about-ov__img-side{height:50vh;position:relative}
+  .about-ov__img-clip{position:absolute;inset:0}
+  .about-ov__content{border-left:none;border-top:1px solid var(--cb)}
+  .about-ov__hl{font-size:.32rem}
+  .col-ch__grid{grid-template-columns:1fr;width:90vw}
+  .shop-grid{grid-template-columns:repeat(2,1fr)}
+  .shop-ov__bar{padding:54px 16px 14px;flex-wrap:wrap;row-gap:10px}
+  .shop-ov__body{padding:16px}
+  .cart-dr{width:100vw}
+  .inf-cv__drag-hint{display:none}
+}
+@media(max-width:480px){
+  .shop-grid{grid-template-columns:1fr}
+}
+
+/* ── WHITE THEME ── */
+[data-theme=white]{--c0:#fff;--c1:#0c0c0c;--cb:rgba(0,0,0,.1);--cd:rgba(0,0,0,.42);--ca:#C94010}
+[data-theme=white] .hero,[data-theme=white] .pre,[data-theme=white] .pmod,[data-theme=white] .look-ov,[data-theme=white] .col-ch,[data-theme=white] .inf-cv,[data-theme=white] .about-ov,[data-theme=white] .cart-dr{background:var(--c0)}
+[data-theme=white] .cur{mix-blend-mode:multiply}
+[data-theme=white] .cur__d{background:var(--c1)}
+[data-theme=white] .cur.hov .cur__d{background:transparent;box-shadow:inset 0 0 0 1px var(--c1)}
+[data-theme=white] .tog{border-color:rgba(0,0,0,.35);background:rgba(255,255,255,.7)}
+[data-theme=white] .tog__b{color:rgba(0,0,0,.8)}
+[data-theme=white] .tog__b.on{color:#fff;background:var(--c1)}
+[data-theme=white] .tog__s{background:rgba(0,0,0,.12)}
+[data-theme=white] .hero-brand,[data-theme=white] .nav__brand,[data-theme=white] .nav__l,[data-theme=white] .cart-btn{color:rgba(0,0,0,.6)}
+[data-theme=white] .nav__l:hover{color:rgba(0,0,0,.9)}
+[data-theme=white] .hero::before{background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(0,0,0,.025) 0%,transparent 70%)}
+[data-theme=white] .rings span{border-color:rgba(0,0,0,.06)}
+[data-theme=white] .hud,[data-theme=white] .leg-item{color:rgba(0,0,0,.28)}
+[data-theme=white] .tile__img{background:#f0f0f0;border-color:rgba(0,0,0,.09)}
+[data-theme=white] .tile__img img{filter:saturate(.9) brightness(1) contrast(1.05)}
+[data-theme=white] .x-btn svg{stroke:var(--c1)}
+[data-theme=white] .spec-row span:last-child{color:rgba(0,0,0,.72)}
+[data-theme=white] .checkout{color:var(--c0)}
+[data-theme=white] .hero-brand{color:rgba(0,0,0,.85)}
+[data-theme=white] .shop-ov{background:var(--c0)}
+[data-theme=white] .shop-card{background:#f5f5f5}
+[data-theme=white] .shop-card__img img{filter:saturate(.85) brightness(.88)}
+[data-theme=white] .shop-card:hover .shop-card__img img{filter:saturate(1) brightness(1)}
+[data-theme=white] .sf{color:rgba(0,0,0,.35)}
+[data-theme=white] .sf:hover:not(.on){color:rgba(0,0,0,.8)}
+[data-theme=white] .sf.on{color:#fff}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"><div class="cur__d"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__brand">Post Archive Faction</div>
+  <div class="nav__links">
+    <a class="nav__l active" id="nav-home">Home</a>
+    <a class="nav__l" id="nav-shop">Shop</a>
+    <a class="nav__l" id="nav-about">About</a>
+  </div>
+  <button class="cart-btn" id="cart-open"><span>Basket</span><span class="cart-n" id="cart-n">0</span></button>
+</nav>
+
+<!-- THEME -->
+<div class="tog">
+  <button class="tog__b on" data-t="noir">NOIR</button>
+  <div class="tog__s"></div>
+  <button class="tog__b" data-t="white">WHITE</button>
+</div>
+
+<!-- PRELOADER -->
+<div class="pre" id="pre">
+  <div class="pre__b">
+    <div class="pre__lbl" id="pre-lbl">POST ARCHIVE FACTION — S26</div>
+    <div class="pre__n" id="pre-n">000</div>
+  </div>
+  <div class="pre__rail"><div class="pre__fill" id="pre-fill"></div></div>
+</div>
+
+<!-- CART -->
+<div class="cart-veil" id="cart-veil"></div>
+<div class="cart-dr" id="cart-dr">
+  <div class="cart-hd">
+    <div class="cart-hd__t">Basket — <span id="cart-cnt">0 items</span></div>
+    <button class="x-btn" id="cart-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="cart-body">
+    <div class="cart-empty" id="cart-empty">Your basket is empty.</div>
+    <div id="cart-list"></div>
+  </div>
+  <div class="cart-ft">
+    <div class="cart-total"><span>Total</span><span id="cart-total">€ 0</span></div>
+    <button class="checkout"><span>Proceed to Checkout</span><span>→</span></button>
+  </div>
+</div>
+
+<!-- LOOK MODAL -->
+<div class="look-ov" id="look-ov">
+  <div class="look-ov__inner">
+    <div class="look-ov__img">
+      <div class="look-ov__img-clip" id="lm-clip"><img id="lm-img" src="" alt=""></div>
+      <div class="look-ov__tag" id="lm-tag"></div>
+    </div>
+    <div class="look-ov__side">
+      <div class="look-ov__head">
+        <div class="look-ov__sub" id="lm-sub"></div>
+        <div class="look-ov__title" id="lm-title"></div>
+      </div>
+      <div class="look-ov__shop-lbl">Shop This Look</div>
+      <div class="look-ov__pieces" id="lm-pieces"></div>
+    </div>
+  </div>
+  <button class="x-btn look-ov__close" id="look-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="pmod" id="pmod">
+  <div class="pmod__inner">
+    <div class="pmod__img">
+      <div class="pmod__img-clip" id="pm-clip"><img id="pm-img" src="" alt=""></div>
+      <div class="pmod__seas">S26</div>
+    </div>
+    <div class="pmod__info">
+      <div class="pmod__head">
+        <div class="pmod__code" id="pm-code"></div>
+        <div class="pmod__name" id="pm-name"></div>
+        <div class="pmod__price" id="pm-price"></div>
+      </div>
+      <div class="pmod__vars-wrap">
+        <div class="pmod__vars-lbl">Variations</div>
+        <div class="pmod__vars" id="pm-vars"></div>
+      </div>
+      <div class="pmod__body">
+        <div>
+          <div class="spec-row"><span>Material</span><span id="pm-mat">—</span></div>
+          <div class="spec-row"><span>Season</span><span id="pm-seas">—</span></div>
+          <div class="spec-row"><span>Status</span><span id="pm-stat">—</span></div>
+          <div class="spec-row"><span>Origin</span><span>Portugal</span></div>
+        </div>
+        <div>
+          <div class="pmod__sz-lbl">Size</div>
+          <div class="pmod__sizes">
+            <button class="sz-btn" data-sz="XS">XS</button>
+            <button class="sz-btn" data-sz="S">S</button>
+            <button class="sz-btn on" data-sz="M">M</button>
+            <button class="sz-btn" data-sz="L">L</button>
+            <button class="sz-btn" data-sz="XL">XL</button>
+          </div>
+          <button class="atb" id="atb"><span>Add to Basket</span><span>→</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="x-btn pmod__close" id="pm-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+</div>
+
+<!-- COLLECTION CHOOSER -->
+<div class="col-ch" id="col-ch">
+  <div class="col-ch__hd">POST ARCHIVE FACTION — COLLECTIONS</div>
+  <div class="col-ch__title" id="col-ch-title">Select a<br>Collection</div>
+  <div class="col-ch__grid" id="col-ch-grid">
+    <div class="col-card" data-col="s26">
+      <div class="col-card__num">01</div>
+      <div class="col-card__name">S26</div>
+      <div class="col-card__sub">Season 26</div>
+      <div class="col-card__count">9 Pieces — Current</div>
+      <div class="col-card__arrow">→</div>
+    </div>
+    <div class="col-card" data-col="archive">
+      <div class="col-card__num">02</div>
+      <div class="col-card__name">S26 Archive</div>
+      <div class="col-card__sub">Archive Edition</div>
+      <div class="col-card__count">Archive Pieces</div>
+      <div class="col-card__arrow">→</div>
+    </div>
+  </div>
+  <button class="x-btn col-ch__close" id="col-ch-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+</div>
+
+<!-- INFINITE CANVAS -->
+<div class="inf-cv" id="inf-cv">
+  <div class="inf-world" id="inf-world"></div>
+  <div class="inf-cv__hud">
+    <div class="inf-cv__col-name" id="inf-col-name">S26</div>
+    <div class="inf-cv__hint">POST ARCHIVE FACTION</div>
+  </div>
+  <button class="x-btn inf-cv__close" id="inf-cv-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+  <div class="inf-cv__drag-hint" id="inf-drag-hint">DRAG TO EXPLORE</div>
+</div>
+
+<!-- ABOUT OVERLAY -->
+<div class="about-ov" id="about-ov">
+  <div class="about-ov__inner">
+    <div class="about-ov__img-side">
+      <div class="about-ov__img-clip" id="aov-clip">
+        <img src="about.png" alt="">
+      </div>
+    </div>
+    <div class="about-ov__content">
+      <div class="about-ov__top">
+        <span>POST ARCHIVE FACTION</span>
+        <span>EST. 2013</span>
+      </div>
+      <div>
+        <h2 class="about-ov__hl">Technical<br>Restraint.</h2>
+        <p class="about-ov__body">Post Archive Faction is a Seoul-based technical clothing label built on the principle of functional restraint. Each garment is an exercise in removal — what remains is essential. S26 continues the exploration of duration, weight, and resistance in material and construction.</p>
+        <div class="about-ov__img2"><img src="aboutis.png" alt=""></div>
+      </div>
+      <div class="about-ov__specs">
+        <div class="about-spec"><span>Founded</span><span>2013 — Seoul</span></div>
+        <div class="about-spec"><span>Current Season</span><span>S26</span></div>
+        <div class="about-spec"><span>Production</span><span>Portugal</span></div>
+        <div class="about-spec"><span>Philosophy</span><span>Function through restraint</span></div>
+      </div>
+    </div>
+  </div>
+  <button class="x-btn about-ov__close" id="aov-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+</div>
+
+<!-- LOOKBOOK -->
+<div class="lkb" id="lkb">
+  <div class="lkb__track" id="lkb-track"></div>
+  <div class="lkb__hud">
+    <div class="lkb__hud-brand">Post Archive Faction</div>
+    <div class="lkb__hud-sub">S26 Lookbook</div>
+  </div>
+  <div class="lkb__ctr">
+    <div class="lkb__ctr-n" id="lkb-ctr-n">01 / 04</div>
+    <div class="lkb__prog"><div class="lkb__prog-fill" id="lkb-prog-fill" style="width:25%"></div></div>
+  </div>
+  <div class="lkb__arrows">
+    <button class="lkb__arr" id="lkb-prev">←</button>
+    <div class="lkb__dots" id="lkb-dots"></div>
+    <button class="lkb__arr" id="lkb-next">→</button>
+  </div>
+  <button class="x-btn lkb__close" id="lkb-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+  <div class="lkb__drag-hint" id="lkb-drag-hint">DRAG TO EXPLORE</div>
+</div>
+
+<!-- SHOP OVERLAY -->
+<div class="shop-ov" id="shop-ov">
+  <div class="shop-ov__bar">
+    <div class="shop-ov__title">S26 — Post Archive Faction</div>
+    <div class="shop-ov__filters">
+      <button class="sf on" data-f="all">All</button>
+      <button class="sf" data-f="S26">S26</button>
+      <button class="sf" data-f="S26 Archive">Archive</button>
+    </div>
+    <button class="x-btn shop-ov__close" id="shop-ov-close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="shop-ov__body">
+    <div class="shop-grid" id="shop-grid"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="rings">
+    <span style="width:44vmin;height:44vmin"></span>
+    <span style="width:72vmin;height:72vmin;opacity:.5"></span>
+    <span style="width:96vmin;height:96vmin;opacity:.25"></span>
+  </div>
+  <div class="hud hud--tl">POST ARCHIVE FACTION<br><span id="hud-rot" style="color:rgba(255,255,255,.35)">DRAG TO EXPLORE</span></div>
+  <div class="hud hud--tr">S26 Collection<br><span style="color:rgba(255,255,255,.35)">3 CATEGORIES</span></div>
+  <div class="hud hud--bl">DRAG / CLICK</div>
+  <div class="legend">
+    <div class="leg-item"><span class="leg-dot leg-dot--m"></span>Model</div>
+    <div class="leg-item"><span class="leg-dot leg-dot--a"></span>Aesthetic</div>
+    <div class="leg-item"><span class="leg-dot leg-dot--b"></span>About</div>
+  </div>
+  <div id="sphere-scene"></div>
+  <div class="hero-brand">POST ARCHIVE FACTION</div>
+  <div class="scroll-hint" id="sh">
+    <span class="sh__lbl">Explore</span>
+    <div class="sh__line"></div>
+  </div>
+</div>
+
+<footer class="ft"><span class="ft__copy">© Post Archive Faction 2026 — S26</span></footer>
+
+<script>
+/* ── FORCE EXIT FALLBACK ── */
+(function(){
+  function fe(){
+    var p=document.getElementById('pre');
+    if(!p||p.style.display==='none')return;
+    p.style.transition='clip-path 1s ease';
+    p.style.clipPath='inset(100% 0 0 0)';
+    setTimeout(function(){p.style.display='none';window._pafHeroInit();},1100);
+  }
+  setTimeout(fe,800);
+})();
+</script>
+
+<script>
+/* ────────────────────────────────────────────────
+   DATA
+──────────────────────────────────────────────── */
+var PRODUCTS=[
+  {id:0,code:'PAF-JR-001',name:'Junya Racer',price:'€ 1,380',priceNum:1380,material:'Technical Nylon Shell',season:'S26',status:'Available',
+    imgs:['DVPAFJunyaRacer_BK1_a7e49c8a-6d27-4cf3-a0cf-3c8ee8287898.webp','DVPAFJunyaRacer_BK1_c9981c12-94d7-47a4-b42f-18cfea05882e.webp','DVPAFJunyaRacer_BK2_7829bbcc-a76c-4061-9599-c194d93c33fc.webp']},
+  {id:1,code:'PAF-DS-002',name:'Drifter Slide',price:'€ 290',priceNum:290,material:'Technical EVA / Neoprene',season:'S26',status:'Available',
+    imgs:['DrifterSlide_2026_BK1_2f113764-5149-4265-9863-a9376433dff0.webp','DrifterSlide_2026_BK2.webp','DrifterSlide_2026_BK4_0431a7e2-6db0-4362-95bf-76d5a35f410b.webp']},
+  {id:2,code:'PAF-PB-003',name:'Patina Blouson',price:'€ 960',priceNum:960,material:'Washed Cotton Canvas',season:'S26 Archive',status:'Low Stock',
+    imgs:['PatinaBlouson_Archive_BR1.webp','PatinaBlouson_Archive_BR2.webp','PatinaBlouson_Archive_BR3.webp']},
+  {id:3,code:'PAF-CP-004',name:'S26 Archive Cap',price:'€ 180',priceNum:180,material:'6-Panel Cotton Twill',season:'S26 Archive',status:'Available',
+    imgs:['S26CapBRCUP1.webp','S26CapBRCUP2.webp','S26Cap_Archive_BRCUL1.webp']},
+  {id:4,code:'PAF-TV-005',name:'S26 Tee IV',price:'€ 220',priceNum:220,material:'280gsm Cotton Jersey',season:'S26',status:'Available',
+    imgs:['S26TeeIV1_15e94874-48dd-4c10-b08e-9a7631b7b182.webp','S26TeeIV2_271041a4-c8af-4ca3-b1a2-469ae5b15599.webp','S26TeeIV3.webp']},
+  {id:5,code:'PAF-TC-006',name:'Trimmed Coat SD',price:'€ 1,180',priceNum:1180,material:'Boiled Wool Blend',season:'S26',status:'Available',
+    imgs:['S26TrimmedCoatSD1.webp','S26TrimmedCoatSD5.webp','S26TrimmedCoatSD6.webp']},
+  {id:6,code:'PAF-TC-007',name:'Trimmed Coat Slate',price:'€ 1,180',priceNum:1180,material:'Boiled Wool Blend',season:'S26',status:'Sold Out',
+    imgs:['S26TrimmedCoat_2026_SDL1.webp','S26TrimmedCoat_2026_SDL2.webp','S26TrimmedCoat_2026_SDL4_5ad87b76-f6e0-4b30-b84e-0dddcf153fdf.webp']},
+  {id:7,code:'PAF-TR-008',name:'S26 Trouser BR',price:'€ 540',priceNum:540,material:'Technical Gabardine',season:'S26',status:'Available',
+    imgs:['S26TrouserBR1.webp','S26TrouserBR2.webp','S26TrouserBR3.webp']},
+  {id:8,code:'PAF-WH-009',name:'Work Hoodie Archive',price:'€ 460',priceNum:460,material:'380gsm Enzyme Cotton',season:'S26 Archive',status:'Available',
+    imgs:['S26WorkHoodie_Archive_GR1_7d7fd8d2-8fc2-41bf-9081-e71a90cc1732.jpg','S26WorkHoodie_Archive_GR2.jpg','S26WorkHoodie_Archive_GR3.jpg']}
+];
+
+/* 4 LOOKS — model images from renamed files */
+var LOOKS=[
+  {name:'Look 01',tag:'Archive Grey',    img:'modelo.png',   products:[8,7,4]},
+  {name:'Look 02',tag:'Technical Slate', img:'modelk.webp',  products:[6,7,4,1]},
+  {name:'Look 03',tag:'Patina Brown',    img:'modelv.png',   products:[2,4,7,3]},
+  {name:'Look 04',tag:'SD Wool',         img:'modleT.webp',  products:[5,7,4,0]}
+];
+
+/* SPHERE — 9 tiles using only the renamed category images */
+var SPHERE=[
+  {img:'modelo.png',      cat:'model',    lbl:'MODEL',     lookIdx:0, w:168, ar:'3/4'},
+  {img:'modelk.webp',     cat:'model',    lbl:'MODEL',     lookIdx:1, w:150, ar:'2/3'},
+  {img:'modelv.png',      cat:'model',    lbl:'MODEL',     lookIdx:2, w:168, ar:'3/4'},
+  {img:'modleT.webp',     cat:'model',    lbl:'MODEL',     lookIdx:3, w:156, ar:'2/3'},
+  {img:'aestetic.png',    cat:'aesthetic',lbl:'AESTHETIC',           w:138, ar:'1/1'},
+  {img:'aestetich.png',   cat:'aesthetic',lbl:'AESTHETIC',           w:162, ar:'4/5'},
+  {img:'aesteticss.png',  cat:'aesthetic',lbl:'AESTHETIC',           w:144, ar:'3/4'},
+  {img:'about.png',       cat:'about',    lbl:'ABOUT',               w:154, ar:'2/3'},
+  {img:'aboutis.png',     cat:'about',    lbl:'ABOUT',               w:135, ar:'1/1'}
+];
+
+/* INFINITE CANVAS layouts per collection */
+var CANVASES={
+  s26:{
+    name:'S26 — Season 26',
+    tiles:[
+      {src:'aestetic.png',   x:-680,y:-300,w:300,h:420},
+      {src:'aestetich.png',  x:-220,y:-530,w:260,h:350},
+      {src:'aesteticss.png', x: 200,y:-270,w:340,h:455},
+      {src:'S26TrimmedCoat_2026_SDL1.webp',x:610,y:-340,w:250,h:375,pid:6},
+      {src:'PatinaBlouson_Archive_BR1.webp',x:-620,y:160,w:230,h:345,pid:2},
+      {src:'S26WorkHoodie_Archive_GR1_7d7fd8d2-8fc2-41bf-9081-e71a90cc1732.jpg',x:-90,y:110,w:290,h:435,pid:8},
+      {src:'S26TrimmedCoatSD1.webp',x:400,y:110,w:250,h:375,pid:5},
+      {src:'DVPAFJunyaRacer_BK1_a7e49c8a-6d27-4cf3-a0cf-3c8ee8287898.webp',x:-440,y:500,w:210,h:210,pid:0},
+      {src:'DrifterSlide_2026_BK1_2f113764-5149-4265-9863-a9376433dff0.webp',x:60,y:540,w:255,h:190,pid:1},
+      {src:'S26TrouserBR1.webp',x:520,y:440,w:220,h:330,pid:7},
+      {src:'S26TeeIV1_15e94874-48dd-4c10-b08e-9a7631b7b182.webp',x:-210,y:-680,w:210,h:315,pid:4},
+      {src:'S26CapBRCUP1.webp',x:290,y:-660,w:190,h:190,pid:3}
+    ]
+  },
+  archive:{
+    name:'S26 — Archive Edition',
+    tiles:[
+      {src:'aestetich.png',  x:-500,y:-210,w:280,h:380},
+      {src:'aesteticss.png', x: 130,y:-400,w:260,h:350},
+      {src:'PatinaBlouson_Archive_BR2.webp',x:-300,y:-490,w:240,h:360,pid:2},
+      {src:'PatinaBlouson_Archive_BR3.webp',x: 460,y:-290,w:230,h:345,pid:2},
+      {src:'S26Cap_Archive_BRCUL1.webp',x:-490,y:180,w:200,h:200,pid:3},
+      {src:'S26WorkHoodie_Archive_GR2.jpg',x:-165,y: 80,w:265,h:400,pid:8},
+      {src:'S26WorkHoodie_Archive_GR3.jpg',x: 350,y:100,w:245,h:368,pid:8},
+      {src:'S26Trousers_Archive_BRL1_16f0001d-949d-4eca-a9d0-2fc79a778bc1.webp',x:60,y:480,w:235,h:352,pid:7},
+      {src:'S26TrimmedCoat_2026_SDL2.webp',x:-385,y:440,w:250,h:375,pid:6},
+      {src:'S26WorkHoodie_Archive_GR6.jpg',x:510,y:380,w:210,h:315,pid:8}
+    ]
+  }
+};
+
+/* ────────────────────────────────────────────────
+   CURSOR
+──────────────────────────────────────────────── */
+var curEl=document.getElementById('cur');
+var mx=0,my=0,cx=0,cy=0;
+window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+(function tick(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;curEl.style.transform='translate('+cx+'px,'+cy+'px)';requestAnimationFrame(tick);})();
+function hover(sel,cls){document.querySelectorAll(sel).forEach(function(el){el.addEventListener('mouseenter',function(){curEl.classList.add(cls);});el.addEventListener('mouseleave',function(){curEl.classList.remove(cls);});});}
+function refreshCur(){
+  hover('.tile,.col-card,.inf-tile,.lp,.pvar,.sz-btn,.atb,.cart-btn,.checkout,.tog__b,.x-btn','hov');
+  hover('a,button','lnk');
+}
+refreshCur();
+
+/* ────────────────────────────────────────────────
+   THEME
+──────────────────────────────────────────────── */
+document.querySelectorAll('[data-t]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.dataset.t;
+    if(t==='noir')document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme',t);
+    document.querySelectorAll('[data-t]').forEach(function(x){x.classList.toggle('on',x===b);});
+  });
+});
+
+/* ────────────────────────────────────────────────
+   CART
+──────────────────────────────────────────────── */
+function gc(){try{return JSON.parse(localStorage.getItem('paf_c')||'[]');}catch(e){return[];}}
+function sc(c){localStorage.setItem('paf_c',JSON.stringify(c));}
+function updBadge(){
+  var c=gc();
+  var n=document.getElementById('cart-n'),cnt=document.getElementById('cart-cnt');
+  if(c.length){n.textContent=c.length;n.classList.add('on');}else{n.classList.remove('on');}
+  if(cnt)cnt.textContent=c.length+' item'+(c.length!==1?'s':'');
+}
+function renderCart(){
+  var c=gc(),list=document.getElementById('cart-list'),empty=document.getElementById('cart-empty'),tot=document.getElementById('cart-total');
+  if(!c.length){empty.style.display='block';list.innerHTML='';tot.textContent='€ 0';return;}
+  empty.style.display='none';
+  var t=0;
+  list.innerHTML=c.map(function(it){t+=it.pN;
+    return '<div class="cart-item"><div class="cart-item__th"><img src="'+it.img+'" alt=""></div>'
+    +'<div><div class="cart-item__name">'+it.name+'</div><div class="cart-item__meta">'+it.code+' / '+it.sz+'</div>'
+    +'<div class="cart-item__bot"><span class="cart-item__price">'+it.price+'</span>'
+    +'<button class="cart-rm" data-rid="'+it.cid+'"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button></div></div></div>';
+  }).join('');
+  tot.textContent='€ '+t.toLocaleString();
+  list.querySelectorAll('[data-rid]').forEach(function(b){b.addEventListener('click',function(){sc(gc().filter(function(x){return x.cid!==parseInt(b.dataset.rid);}));renderCart();updBadge();});});
+}
+function addToCart(pid,sz){
+  var p=PRODUCTS[pid];if(!p||p.status==='Sold Out')return;
+  var c=gc();c.push({cid:Date.now(),name:p.name,code:p.code,price:p.price,pN:p.priceNum,sz:sz,img:p.imgs[0]});
+  sc(c);updBadge();renderCart();openCart();
+}
+function openCart(){renderCart();document.getElementById('cart-dr').classList.add('on');document.getElementById('cart-veil').classList.add('on');document.body.style.overflow='hidden';}
+function closeCart(){document.getElementById('cart-dr').classList.remove('on');document.getElementById('cart-veil').classList.remove('on');document.body.style.overflow='';}
+document.getElementById('cart-open').addEventListener('click',openCart);
+document.getElementById('cart-close').addEventListener('click',closeCart);
+document.getElementById('cart-veil').addEventListener('click',closeCart);
+updBadge();
+
+/* ────────────────────────────────────────────────
+   PRODUCT MODAL
+──────────────────────────────────────────────── */
+var pmOpen=false,pmPid=-1,pmSz='M';
+document.querySelectorAll('.sz-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.sz-btn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');pmSz=b.dataset.sz;});});
+function openPM(pid){
+  if(pmOpen)return;pmOpen=true;pmPid=pid;
+  var p=PRODUCTS[pid],ov=document.getElementById('pmod');
+  document.getElementById('pm-code').textContent=p.code;
+  document.getElementById('pm-name').textContent=p.name;
+  document.getElementById('pm-price').textContent=p.price;
+  document.getElementById('pm-mat').textContent=p.material;
+  document.getElementById('pm-seas').textContent=p.season;
+  document.getElementById('pm-stat').textContent=p.status;
+  document.getElementById('pm-img').src=p.imgs[0];
+  var vEl=document.getElementById('pm-vars');
+  vEl.innerHTML=p.imgs.map(function(s,i){return '<div class="pvar'+(i===0?' on':'')+'" data-s="'+s+'"><img src="'+s+'" alt=""></div>';}).join('');
+  vEl.querySelectorAll('.pvar').forEach(function(v){v.addEventListener('click',function(){vEl.querySelectorAll('.pvar').forEach(function(x){x.classList.remove('on');});v.classList.add('on');var im=document.getElementById('pm-img');gsap.to(im,{opacity:0,duration:.18,onComplete:function(){im.src=v.dataset.s;gsap.to(im,{opacity:1,duration:.28});}});});});
+  pmSz='M';document.querySelectorAll('.sz-btn').forEach(function(b){b.classList.toggle('on',b.dataset.sz==='M');});
+  gsap.set(['#pm-code','#pm-name','#pm-price','.atb'],{y:20,opacity:0});
+  gsap.set('.spec-row span',{y:'110%'});
+  ov.style.display='block';document.body.style.overflow='hidden';
+  var tl=gsap.timeline();
+  tl.fromTo(ov,{clipPath:'inset(50% 50% 50% 50%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:.65,ease:'expo.out'})
+    .fromTo('#pm-clip',{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)',duration:.8,ease:'power3.out'},.18)
+    .to(['#pm-code','#pm-name','#pm-price'],{y:0,opacity:1,duration:.5,stagger:.06,ease:'expo.out'},.3)
+    .to('.spec-row span',{y:0,duration:.45,stagger:.04,ease:'expo.out'},.4)
+    .to('.atb',{y:0,opacity:1,duration:.5,ease:'expo.out'},.48);
+  refreshCur();
+}
+function closePM(cb){
+  if(!pmOpen){if(cb)cb();return;}
+  gsap.to('#pmod',{clipPath:'inset(50% 50% 50% 50%)',duration:.48,ease:'expo.in',onComplete:function(){document.getElementById('pmod').style.display='none';document.body.style.overflow='';pmOpen=false;pmPid=-1;gsap.set('#pm-clip',{clipPath:'inset(0 0 100% 0)'});if(cb)cb();}});
+}
+document.getElementById('pm-close').addEventListener('click',function(){closePM();});
+document.getElementById('atb').addEventListener('click',function(){if(pmPid>=0)addToCart(pmPid,pmSz);});
+
+/* ────────────────────────────────────────────────
+   LOOK MODAL
+──────────────────────────────────────────────── */
+var lmOpen=false;
+function openLM(idx){
+  if(lmOpen||pmOpen)return;lmOpen=true;
+  var lk=LOOKS[idx],ov=document.getElementById('look-ov');
+  document.getElementById('lm-img').src=lk.img;
+  document.getElementById('lm-tag').textContent=lk.name;
+  document.getElementById('lm-sub').textContent='S26 — '+lk.tag;
+  document.getElementById('lm-title').textContent=lk.name;
+  var pel=document.getElementById('lm-pieces');
+  pel.innerHTML=lk.products.map(function(pid){var p=PRODUCTS[pid];
+    return '<div class="lp" data-pid="'+pid+'"><div class="lp__thumb"><img src="'+p.imgs[0]+'" alt=""></div>'
+    +'<div><div class="lp__code">'+p.code+'</div><div class="lp__name">'+p.name+'</div><div class="lp__price">'+p.price+'</div></div>'
+    +'<span class="lp__view">View →</span></div>';
+  }).join('');
+  pel.querySelectorAll('.lp').forEach(function(el){el.addEventListener('click',function(){closeLM(function(){openPM(parseInt(el.dataset.pid));});});});
+  gsap.set(['.look-ov__sub','.look-ov__title'],{y:20,opacity:0});
+  ov.style.display='block';document.body.style.overflow='hidden';
+  var tl=gsap.timeline();
+  tl.fromTo(ov,{clipPath:'inset(100% 0 0 0)'},{clipPath:'inset(0% 0 0 0)',duration:.72,ease:'expo.out'})
+    .fromTo('#lm-clip',{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)',duration:.85,ease:'power3.out'},.16)
+    .to(['.look-ov__sub','.look-ov__title'],{y:0,opacity:1,duration:.5,stagger:.08,ease:'expo.out'},.3);
+  refreshCur();
+}
+function closeLM(cb){
+  if(!lmOpen){if(cb)cb();return;}
+  var ov=document.getElementById('look-ov');
+  gsap.to(ov,{clipPath:'inset(100% 0 0 0)',duration:.5,ease:'expo.in',onComplete:function(){ov.style.display='none';document.body.style.overflow='';lmOpen=false;gsap.set('#lm-clip',{clipPath:'inset(0 0 100% 0)'});if(cb)cb();}});
+}
+document.getElementById('look-close').addEventListener('click',function(){closeLM();});
+
+/* ────────────────────────────────────────────────
+   COLLECTION CHOOSER
+──────────────────────────────────────────────── */
+var ccOpen=false;
+function openCC(){
+  if(ccOpen||lmOpen||pmOpen||infOpen||aovOpen)return;ccOpen=true;
+  var el=document.getElementById('col-ch');
+  el.classList.add('visible');
+  gsap.set(['#col-ch-title','#col-ch-grid'],{y:30,opacity:0});
+  gsap.fromTo(el,{clipPath:'inset(50% 50% 50% 50%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:.6,ease:'expo.out',onComplete:function(){
+    gsap.to(['#col-ch-title','#col-ch-grid'],{y:0,opacity:1,duration:.5,stagger:.1,ease:'expo.out'});
+  }});
+  document.body.style.overflow='hidden';
+  refreshCur();
+}
+function closeCC(cb){
+  if(!ccOpen){if(cb)cb();return;}
+  gsap.to('#col-ch',{clipPath:'inset(50% 50% 50% 50%)',duration:.45,ease:'expo.in',onComplete:function(){document.getElementById('col-ch').classList.remove('visible');ccOpen=false;document.body.style.overflow='';if(cb)cb();}});
+}
+document.getElementById('col-ch-close').addEventListener('click',function(){closeCC();});
+document.querySelectorAll('.col-card').forEach(function(card){
+  card.addEventListener('click',function(){
+    var col=card.dataset.col;
+    closeCC(function(){openInfCanvas(col);});
+  });
+});
+
+/* ────────────────────────────────────────────────
+   INFINITE CANVAS
+──────────────────────────────────────────────── */
+var infOpen=false;
+var INF={x:0,y:0,vx:0,vy:0,zoom:1,tz:1,drag:false,sx:0,sy:0,smx:0,smy:0,pmx:0,pmy:0,pvx:0,pvy:0};
+
+gsap.ticker.add(function(){
+  if(!infOpen)return;
+  if(!INF.drag){
+    INF.x+=INF.vx;INF.y+=INF.vy;
+    INF.vx*=0.92;INF.vy*=0.92;
+    INF.zoom+=(INF.tz-INF.zoom)*0.1;
+  }
+  var w=document.getElementById('inf-world');
+  if(w)w.style.transform='translate('+INF.x+'px,'+INF.y+'px) scale('+INF.zoom+')';
+});
+
+function buildCanvas(col){
+  var world=document.getElementById('inf-world');
+  world.innerHTML='';
+  var data=CANVASES[col];
+  document.getElementById('inf-col-name').textContent=data.name;
+  data.tiles.forEach(function(t){
+    var div=document.createElement('div');
+    div.className='inf-tile'+(t.pid!=null?' clickable':'');
+    div.style.cssText='left:'+(t.x)+'px;top:'+(t.y)+'px;width:'+t.w+'px;height:'+t.h+'px';
+    var lbl=t.pid!=null?PRODUCTS[t.pid].name:'';
+    var price=t.pid!=null?PRODUCTS[t.pid].price:'';
+    div.innerHTML='<img src="'+t.src+'" alt="'+lbl+'">'+(lbl?'<div class="inf-tile__lbl">'+lbl+'</div>':'')+(price?'<div class="inf-tile__price">'+price+'</div>':'');
+    if(t.pid!=null){
+      (function(pid){div.addEventListener('click',function(e){if(!INF.didDrag)openPM(pid);});})(t.pid);
+    }
+    world.appendChild(div);
+  });
+}
+function openInfCanvas(col){
+  if(infOpen)return;infOpen=true;
+  buildCanvas(col);
+  INF.x=window.innerWidth/2;INF.y=window.innerHeight/2;
+  INF.vx=0;INF.vy=0;INF.zoom=1;INF.tz=1;
+  var el=document.getElementById('inf-cv');
+  el.classList.add('visible');
+  document.body.style.overflow='hidden';
+  var hint=document.getElementById('inf-drag-hint');
+  hint.style.opacity='1';
+  setTimeout(function(){hint.style.opacity='0';},2200);
+  /* drag */
+  el.addEventListener('mousedown',mdInf);
+  el.addEventListener('touchstart',tsInf,{passive:true});
+  el.addEventListener('wheel',wlInf,{passive:false});
+  refreshCur();
+}
+function closeInfCanvas(){
+  if(!infOpen)return;
+  var el=document.getElementById('inf-cv');
+  el.classList.remove('visible');
+  el.removeEventListener('mousedown',mdInf);
+  el.removeEventListener('touchstart',tsInf);
+  el.removeEventListener('wheel',wlInf);
+  infOpen=false;document.body.style.overflow='';
+}
+function mdInf(e){
+  INF.drag=true;INF.didDrag=false;
+  INF.sx=INF.x;INF.sy=INF.y;INF.smx=e.clientX;INF.smy=e.clientY;
+  INF.pmx=e.clientX;INF.pmy=e.clientY;INF.pvx=0;INF.pvy=0;
+  document.getElementById('inf-cv').classList.add('drag');
+  window.addEventListener('mousemove',mmInf);
+  window.addEventListener('mouseup',muInf);
+}
+function mmInf(e){
+  if(!INF.drag)return;
+  var dx=e.clientX-INF.smx,dy=e.clientY-INF.smy;
+  if(Math.abs(dx)>3||Math.abs(dy)>3)INF.didDrag=true;
+  INF.pvx=e.clientX-INF.pmx;INF.pvy=e.clientY-INF.pmy;
+  INF.x=INF.sx+dx;INF.y=INF.sy+dy;INF.pmx=e.clientX;INF.pmy=e.clientY;
+  document.getElementById('inf-world').style.transform='translate('+INF.x+'px,'+INF.y+'px) scale('+INF.zoom+')';
+}
+function muInf(){
+  INF.drag=false;
+  INF.vx=INF.pvx*1.4;INF.vy=INF.pvy*1.4;
+  document.getElementById('inf-cv').classList.remove('drag');
+  window.removeEventListener('mousemove',mmInf);
+  window.removeEventListener('mouseup',muInf);
+}
+var ltx=0,lty=0;
+function tsInf(e){INF.drag=true;INF.didDrag=false;INF.sx=INF.x;INF.sy=INF.y;INF.smx=e.touches[0].clientX;INF.smy=e.touches[0].clientY;ltx=e.touches[0].clientX;lty=e.touches[0].clientY;INF.pvx=0;INF.pvy=0;
+  document.getElementById('inf-cv').addEventListener('touchmove',tmInf,{passive:true});
+  document.getElementById('inf-cv').addEventListener('touchend',teInf);
+}
+function tmInf(e){var dx=e.touches[0].clientX-INF.smx,dy=e.touches[0].clientY-INF.smy;INF.didDrag=true;INF.pvx=e.touches[0].clientX-ltx;INF.pvy=e.touches[0].clientY-lty;INF.x=INF.sx+dx;INF.y=INF.sy+dy;ltx=e.touches[0].clientX;lty=e.touches[0].clientY;document.getElementById('inf-world').style.transform='translate('+INF.x+'px,'+INF.y+'px) scale('+INF.zoom+')';}
+function teInf(){INF.drag=false;INF.vx=INF.pvx*1.4;INF.vy=INF.pvy*1.4;}
+function wlInf(e){e.preventDefault();var d=e.deltaY>0?0.92:1.09;INF.tz=Math.max(0.35,Math.min(2.8,INF.tz*d));}
+document.getElementById('inf-cv-close').addEventListener('click',closeInfCanvas);
+
+/* ────────────────────────────────────────────────
+   ABOUT OVERLAY
+──────────────────────────────────────────────── */
+var aovOpen=false;
+function openAov(){
+  if(aovOpen||lmOpen||pmOpen||ccOpen||infOpen)return;aovOpen=true;
+  var el=document.getElementById('about-ov');
+  el.style.display='block';document.body.style.overflow='hidden';
+  gsap.set(['.about-ov__hl','.about-ov__body','.about-ov__img2'],{y:20,opacity:0});
+  gsap.set('.about-spec span',{y:'110%'});
+  gsap.fromTo(el,{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:.7,ease:'expo.out'})
+  gsap.fromTo('#aov-clip',{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:.85,ease:'power3.out',delay:.12});
+  gsap.to(['.about-ov__hl','.about-ov__body','.about-ov__img2'],{y:0,opacity:1,duration:.55,stagger:.1,ease:'expo.out',delay:.35});
+  gsap.to('.about-spec span',{y:0,duration:.45,stagger:.04,ease:'expo.out',delay:.5});
+  refreshCur();
+}
+function closeAov(){
+  if(!aovOpen)return;
+  gsap.to('#about-ov',{clipPath:'inset(0 100% 0 0)',duration:.5,ease:'expo.in',onComplete:function(){document.getElementById('about-ov').style.display='none';aovOpen=false;document.body.style.overflow='';}});
+}
+document.getElementById('aov-close').addEventListener('click',closeAov);
+
+/* ────────────────────────────────────────────────
+   NAV triggers
+──────────────────────────────────────────────── */
+/* force-close every overlay instantly, then run callback */
+function forceCloseAll(cb){
+  var ovs=['look-ov','pmod','col-ch','about-ov'];
+  ovs.forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var ic=document.getElementById('inf-cv');
+  if(ic){ic.classList.remove('visible');ic.removeEventListener('mousedown',mdInf);ic.removeEventListener('touchstart',tsInf);ic.removeEventListener('wheel',wlInf);}
+  var so=document.getElementById('shop-ov');if(so)so.classList.remove('visible');
+  var lb=document.getElementById('lkb');
+  if(lb){lb.classList.remove('visible');lb.removeEventListener('mousedown',lkbMD);lb.removeEventListener('touchstart',lkbTS);}
+  lmOpen=false;pmOpen=false;ccOpen=false;infOpen=false;aovOpen=false;shopOpen=false;lkbOpen=false;
+  document.body.style.overflow='';
+  gsap.set(['#lm-clip','#pm-clip','#aov-clip'],{clearProps:'clipPath'});
+  if(cb)setTimeout(cb,40);
+}
+function setNavActive(id){document.querySelectorAll('.nav__l').forEach(function(l){l.classList.toggle('active',l.id===id);});}
+document.getElementById('nav-home').addEventListener('click',function(e){e.preventDefault();forceCloseAll(function(){});setNavActive('nav-home');});
+document.getElementById('nav-shop').addEventListener('click',function(e){e.preventDefault();forceCloseAll(function(){openShop();});});
+document.getElementById('nav-about').addEventListener('click',function(e){e.preventDefault();forceCloseAll(openAov);});
+
+/* ────────────────────────────────────────────────
+   LOOKBOOK
+──────────────────────────────────────────────── */
+var lkbOpen=false;
+var LKB={idx:0,x:0,vx:0,blur:0,drag:false,startX:0,startMX:0,_lastMX:0,pvx:0,didDrag:false};
+
+gsap.ticker.add(function(){
+  if(!lkbOpen)return;
+  if(!LKB.drag){
+    var snap=-LKB.idx*window.innerWidth;
+    var diff=snap-LKB.x;
+    LKB.vx+=diff*0.1;
+    LKB.vx*=0.78;
+    LKB.x+=LKB.vx;
+  }
+  var speed=Math.abs(LKB.vx);
+  LKB.blur+=(Math.min(speed*0.55,10)-LKB.blur)*0.22;
+  var t=document.getElementById('lkb-track');
+  if(t){
+    t.style.transform='translateX('+LKB.x+'px)';
+    t.style.filter=LKB.blur>0.3?'blur('+LKB.blur.toFixed(1)+'px)':'';
+  }
+});
+
+function buildLkbPanels(){
+  var track=document.getElementById('lkb-track');
+  track.innerHTML='';
+  var dots=document.getElementById('lkb-dots');
+  dots.innerHTML='';
+  LOOKS.forEach(function(lk,i){
+    /* dot */
+    var dot=document.createElement('div');dot.className='lkb__dot'+(i===0?' on':'');
+    dot.addEventListener('click',function(){if(!LKB.drag)goLook(i);});dots.appendChild(dot);
+
+    var panel=document.createElement('div');panel.className='lkb__panel';panel.dataset.idx=i;
+    var piecesHtml=lk.products.map(function(pid){
+      var p=PRODUCTS[pid];
+      return '<div class="lkb__piece" data-pid="'+pid+'">'
+        +'<div class="lkb__piece-thumb"><img src="'+p.imgs[0]+'" alt=""></div>'
+        +'<div><span class="lkb__piece-code">'+p.code+'</span>'
+        +'<span class="lkb__piece-name">'+p.name+'</span></div>'
+        +'<span class="lkb__piece-price">'+p.price+'</span></div>';
+    }).join('');
+
+    panel.innerHTML=
+      '<div class="lkb__img-side">'
+        +'<img src="'+lk.img+'" alt="'+lk.name+'">'
+        +'<div class="lkb__ghost-n">'+String(i+1).padStart(2,'0')+'</div>'
+      +'</div>'
+      +'<div class="lkb__info">'
+        +'<div class="lkb__info-top">'
+          +'<span class="lkb__season-tag">S26 — '+lk.tag+'</span>'
+        +'</div>'
+        +'<div class="lkb__info-mid">'
+          +'<div class="lkb__look-label">Look '+String(i+1).padStart(2,'0')+'</div>'
+          +'<div class="lkb__look-title">'+lk.tag+'</div>'
+        +'</div>'
+        +'<div class="lkb__info-bot">'
+          +'<div class="lkb__pieces-hd">In This Look</div>'
+          +'<div class="lkb__pieces">'+piecesHtml+'</div>'
+          +'<button class="lkb__shop-btn" data-lidx="'+i+'"><span>Shop This Look</span><span>→</span></button>'
+        +'</div>'
+      +'</div>';
+
+    panel.querySelectorAll('.lkb__piece').forEach(function(el){
+      el.addEventListener('click',function(){if(!LKB.didDrag)openPM(parseInt(el.dataset.pid));});
+    });
+    panel.querySelector('.lkb__shop-btn').addEventListener('click',function(){
+      openPM(lk.products[0]);
+    });
+    track.appendChild(panel);
+  });
+}
+
+function updateLkbUI(animate){
+  var n=LOOKS.length;
+  document.getElementById('lkb-ctr-n').textContent=String(LKB.idx+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');
+  document.getElementById('lkb-prog-fill').style.width=((LKB.idx+1)/n*100)+'%';
+  document.getElementById('lkb-prev').disabled=LKB.idx===0;
+  document.getElementById('lkb-next').disabled=LKB.idx===n-1;
+  document.querySelectorAll('.lkb__dot').forEach(function(d,i){d.classList.toggle('on',i===LKB.idx);});
+  if(animate){
+    var panel=document.querySelectorAll('.lkb__panel')[LKB.idx];
+    if(panel){
+      var els=[panel.querySelector('.lkb__look-label'),panel.querySelector('.lkb__look-title'),panel.querySelector('.lkb__pieces-hd'),panel.querySelector('.lkb__pieces'),panel.querySelector('.lkb__shop-btn')];
+      gsap.fromTo(els,{y:22,opacity:0},{y:0,opacity:1,duration:.55,stagger:.07,ease:'expo.out',delay:.1});
+    }
+  }
+}
+
+function goLook(idx){
+  LKB.idx=Math.max(0,Math.min(LOOKS.length-1,idx));
+  updateLkbUI(true);
+}
+
+function openLkb(startIdx){
+  if(lkbOpen)return;lkbOpen=true;
+  LKB.idx=startIdx||0;LKB.x=0;LKB.vx=0;LKB.blur=0;
+  buildLkbPanels();
+  /* snap to start look instantly */
+  LKB.x=-LKB.idx*window.innerWidth;
+  updateLkbUI(false);
+  var el=document.getElementById('lkb');
+  el.classList.add('visible');
+  document.body.style.overflow='hidden';
+  var hint=document.getElementById('lkb-drag-hint');hint.style.opacity='1';
+  setTimeout(function(){hint.style.opacity='0';},2000);
+  gsap.fromTo(el,{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0% 0 0%)',duration:.72,ease:'expo.out',onComplete:function(){
+    updateLkbUI(true);
+  }});
+  /* drag */
+  el.addEventListener('mousedown',lkbMD);
+  el.addEventListener('touchstart',lkbTS,{passive:true});
+  refreshCur();
+}
+
+function closeLkb(){
+  if(!lkbOpen)return;
+  var el=document.getElementById('lkb');
+  gsap.to(el,{clipPath:'inset(0 100% 0 0)',duration:.5,ease:'expo.in',onComplete:function(){
+    el.classList.remove('visible');
+    el.removeEventListener('mousedown',lkbMD);
+    el.removeEventListener('touchstart',lkbTS);
+    lkbOpen=false;document.body.style.overflow='';
+  }});
+}
+
+function lkbMD(e){
+  if(e.target.closest('button,.lkb__piece'))return;
+  LKB.drag=true;LKB.didDrag=false;
+  LKB.startX=LKB.x;LKB.startMX=e.clientX;LKB._lastMX=e.clientX;LKB.pvx=0;
+  document.getElementById('lkb').classList.add('dragging');
+  window.addEventListener('mousemove',lkbMM);window.addEventListener('mouseup',lkbMU);
+}
+function lkbMM(e){
+  if(!LKB.drag)return;
+  var dx=e.clientX-LKB.startMX;
+  if(Math.abs(dx)>4)LKB.didDrag=true;
+  LKB.pvx=e.clientX-LKB._lastMX;LKB._lastMX=e.clientX;
+  LKB.x=LKB.startX+dx;
+}
+function lkbMU(){
+  if(!LKB.drag)return;
+  LKB.drag=false;
+  document.getElementById('lkb').classList.remove('dragging');
+  window.removeEventListener('mousemove',lkbMM);window.removeEventListener('mouseup',lkbMU);
+  var dx=LKB.x-LKB.startX;var threshold=window.innerWidth*0.22;
+  var dir=0;
+  if(Math.abs(LKB.pvx)>6||Math.abs(dx)>threshold)dir=dx<0?1:-1;
+  var newIdx=Math.max(0,Math.min(LOOKS.length-1,LKB.idx+dir));
+  if(newIdx!==LKB.idx){LKB.idx=newIdx;updateLkbUI(true);}
+}
+/* touch */
+var _lkbLTX=0;
+function lkbTS(e){
+  LKB.drag=true;LKB.didDrag=false;LKB.startX=LKB.x;LKB.startMX=e.touches[0].clientX;_lkbLTX=e.touches[0].clientX;LKB.pvx=0;
+  document.getElementById('lkb').addEventListener('touchmove',lkbTM,{passive:true});
+  document.getElementById('lkb').addEventListener('touchend',lkbTE);
+}
+function lkbTM(e){
+  var dx=e.touches[0].clientX-LKB.startMX;if(Math.abs(dx)>4)LKB.didDrag=true;
+  LKB.pvx=e.touches[0].clientX-_lkbLTX;_lkbLTX=e.touches[0].clientX;LKB.x=LKB.startX+dx;
+}
+function lkbTE(){
+  LKB.drag=false;
+  document.getElementById('lkb').removeEventListener('touchmove',lkbTM);
+  document.getElementById('lkb').removeEventListener('touchend',lkbTE);
+  var dx=LKB.x-LKB.startX;var threshold=window.innerWidth*0.22;
+  var dir=0;if(Math.abs(LKB.pvx)>5||Math.abs(dx)>threshold)dir=dx<0?1:-1;
+  var newIdx=Math.max(0,Math.min(LOOKS.length-1,LKB.idx+dir));
+  if(newIdx!==LKB.idx){LKB.idx=newIdx;updateLkbUI(true);}
+}
+/* arrow buttons */
+document.getElementById('lkb-prev').addEventListener('click',function(){goLook(LKB.idx-1);});
+document.getElementById('lkb-next').addEventListener('click',function(){goLook(LKB.idx+1);});
+document.getElementById('lkb-close').addEventListener('click',closeLkb);
+/* arrow keys */
+document.addEventListener('keydown',function(e){
+  if(!lkbOpen)return;
+  if(e.key==='ArrowRight')goLook(LKB.idx+1);
+  if(e.key==='ArrowLeft')goLook(LKB.idx-1);
+});
+
+/* ────────────────────────────────────────────────
+   SHOP OVERLAY
+──────────────────────────────────────────────── */
+var shopOpen=false,shopFilter='all';
+function buildShopGrid(){
+  var grid=document.getElementById('shop-grid');
+  grid.innerHTML='';
+  PRODUCTS.forEach(function(p,i){
+    var card=document.createElement('div');
+    card.className='shop-card';
+    card.dataset.season=p.season;
+    card.innerHTML='<div class="shop-card__num">'+String(i+1).padStart(2,'0')+'</div>'
+      +'<div class="shop-card__img"><img src="'+p.imgs[0]+'" alt="'+p.name+'"></div>'
+      +'<div class="shop-card__clip"><div class="shop-card__info">'
+        +'<div class="shop-card__code">'+p.code+'</div>'
+        +'<div class="shop-card__name">'+p.name+'</div>'
+        +'<div class="shop-card__row">'
+          +'<span class="shop-card__price">'+p.price+'</span>'
+          +'<span class="shop-card__status'+(p.status==='Sold Out'?' sold':'')+'">'+(p.status==='Sold Out'?'Sold Out':p.season)+'</span>'
+        +'</div>'
+      +'</div></div>';
+    card.addEventListener('click',function(){openPM(p.id);});
+    grid.appendChild(card);
+  });
+}
+function applyShopFilter(f){
+  shopFilter=f;
+  document.querySelectorAll('.sf').forEach(function(b){b.classList.toggle('on',b.dataset.f===f);});
+  var cards=document.querySelectorAll('.shop-card');
+  cards.forEach(function(c){
+    var match=(f==='all'||c.dataset.season===f);
+    if(match){gsap.to(c,{opacity:1,scale:1,duration:.4,ease:'power2.out',pointerEvents:'auto'});}
+    else{gsap.to(c,{opacity:.12,scale:.97,duration:.35,ease:'power2.out',pointerEvents:'none'});}
+  });
+}
+function openShop(){
+  if(shopOpen||pmOpen)return;shopOpen=true;
+  buildShopGrid();
+  applyShopFilter('all');
+  var el=document.getElementById('shop-ov');
+  el.classList.add('visible');
+  document.body.style.overflow='hidden';
+  setNavActive('nav-shop');
+  gsap.fromTo(el,{clipPath:'inset(100% 0 0 0)'},{clipPath:'inset(0% 0 0 0)',duration:.72,ease:'expo.out',onComplete:function(){
+    /* stagger each card clip in */
+    var cards=document.querySelectorAll('.shop-card');
+    gsap.fromTo(cards,{clipPath:'inset(100% 0 0 0)',opacity:0},{clipPath:'inset(0% 0 0 0)',opacity:1,duration:.6,stagger:{amount:.7,from:'start'},ease:'expo.out'});
+  }});
+  refreshCur();
+}
+function closeShop(){
+  if(!shopOpen)return;
+  gsap.to('#shop-ov',{clipPath:'inset(100% 0 0 0)',duration:.5,ease:'expo.in',onComplete:function(){
+    document.getElementById('shop-ov').classList.remove('visible');
+    shopOpen=false;document.body.style.overflow='';
+    setNavActive('nav-home');
+  }});
+}
+document.getElementById('shop-ov-close').addEventListener('click',closeShop);
+document.querySelectorAll('.sf').forEach(function(b){b.addEventListener('click',function(){applyShopFilter(b.dataset.f);});});
+
+/* ────────────────────────────────────────────────
+   ESC
+──────────────────────────────────────────────── */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(pmOpen)closePM();
+  else if(lkbOpen)closeLkb();
+  else if(lmOpen)closeLM();
+  else if(infOpen)closeInfCanvas();
+  else if(ccOpen)closeCC();
+  else if(aovOpen)closeAov();
+  else if(shopOpen)closeShop();
+  else closeCart();
+});
+
+/* ────────────────────────────────────────────────
+   SPHERE
+──────────────────────────────────────────────── */
+var _heroInited=false;
+window._pafHeroInit=function(){if(_heroInited)return;_heroInited=true;initHero();};
+function initHero(){
+  gsap.to('#sh',{autoAlpha:1,duration:.6,delay:.9});
+  var hero=document.getElementById('hero');
+  var scene=document.getElementById('sphere-scene');
+  var N=SPHERE.length;
+  var GOLDEN=Math.PI*(1+Math.sqrt(5));
+  var R=Math.min(window.innerWidth,window.innerHeight)*0.31;
+  var FOV=780,scx=window.innerWidth/2,scy=window.innerHeight/2;
+
+  var pts=[];
+  SPHERE.forEach(function(cfg,i){
+    var phi=Math.acos(1-2*(i+.5)/N);
+    var theta=GOLDEN*i;
+    var el=document.createElement('div');
+    el.className='tile';el.style.width=cfg.w+'px';
+    el.dataset.cat=cfg.cat;el.dataset.i=i;
+    el.innerHTML='<div class="tile__img" style="aspect-ratio:'+cfg.ar+'">'
+      +'<img src="'+cfg.img+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block">'
+      +'</div><div class="tile__lbl">'+cfg.lbl+'</div>';
+    scene.appendChild(el);
+    pts.push({el:el,cfg:cfg,x0:R*Math.sin(phi)*Math.cos(theta),y0:R*Math.cos(phi),z0:R*Math.sin(phi)*Math.sin(theta),ph:i*(Math.PI*2/N)});
+  });
+
+  var rX=0.28,rY=0,tX=0.28,tY=0,vX=0,vY=0,inter=false,blur=0;
+
+  function render(){
+    var t=Date.now()*.0006,cX=Math.cos(rX),sX=Math.sin(rX),cY=Math.cos(rY),sY=Math.sin(rY);
+    var proj=pts.map(function(p){
+      var x1=p.x0*cY+p.z0*sY,y1=p.y0,z1=-p.x0*sY+p.z0*cY;
+      var x2=x1,y2=y1*cX-z1*sX,z2=y1*sX+z1*cX;
+      return{p:p,x2:x2,y2:y2+Math.sin(t+p.ph)*4,z2:z2};
+    });
+    proj.sort(function(a,b){return a.z2-b.z2;});
+    proj.forEach(function(it,si){
+      var sc=FOV/(FOV+it.z2);
+      var al=Math.max(0.22,Math.min(1,(it.z2+R*1.1)/(R*1.7)));
+      var bl=Math.max(0,(1-al)*2.5)+blur;
+      gsap.set(it.p.el,{x:scx+it.x2*sc,y:scy+it.y2*sc,xPercent:-50,yPercent:-50,scale:sc*.94,autoAlpha:al,filter:bl>0.15?'blur('+bl.toFixed(2)+'px)':'none',zIndex:si});
+      it.p.el.style.pointerEvents=si>N/2?'auto':'none';
+    });
+    document.getElementById('hud-rot').textContent='ROT '+((rY*180/Math.PI)%360|0)+'° / '+((rX*180/Math.PI)%360|0)+'°';
+  }
+
+  gsap.ticker.add(function(){
+    if(!inter)tY+=.0025;
+    vX+=(tX-rX)*.06;vY+=(tY-rY)*.06;vX*=.82;vY*=.82;rX+=vX;rY+=vY;
+    var sp=Math.sqrt(vX*vX+vY*vY);blur+=(Math.min(sp*18,4)-blur)*.22;
+    render();
+  });
+
+  var dragging=false,ldx=0,ldy=0,dvX=0,dvY=0;
+  hero.addEventListener('mousedown',function(e){if(e.target.closest('.tile'))return;dragging=true;inter=true;ldx=e.clientX;ldy=e.clientY;hero.classList.add('drag');});
+  window.addEventListener('mousemove',function(e){if(!dragging)return;dvX=(e.clientY-ldy)*.005;dvY=(e.clientX-ldx)*.005;tX+=dvX;tY+=dvY;ldx=e.clientX;ldy=e.clientY;});
+  window.addEventListener('mouseup',function(){if(!dragging)return;dragging=false;hero.classList.remove('drag');vX+=dvX*4;vY+=dvY*4;setTimeout(function(){inter=false;},2000);});
+  hero.addEventListener('wheel',function(e){e.preventDefault();inter=true;tY+=e.deltaX*.004;tX+=e.deltaY*.004;clearTimeout(hero._wt);hero._wt=setTimeout(function(){inter=false;},900);},{passive:false});
+  var ltx2=0,lty2=0;
+  hero.addEventListener('touchstart',function(e){inter=true;ltx2=e.touches[0].clientX;lty2=e.touches[0].clientY;},{passive:true});
+  hero.addEventListener('touchmove',function(e){tY+=(e.touches[0].clientX-ltx2)*.006;tX+=(e.touches[0].clientY-lty2)*.006;ltx2=e.touches[0].clientX;lty2=e.touches[0].clientY;},{passive:true});
+  hero.addEventListener('touchend',function(){setTimeout(function(){inter=false;},1200);});
+
+  /* TILE CLICK → category action */
+  pts.forEach(function(p){
+    p.el.addEventListener('click',function(){
+      if(dragging)return;
+      var cat=p.cfg.cat;
+      if(cat==='model')openLkb(p.cfg.lookIdx);
+      else if(cat==='aesthetic')openCC();
+      else if(cat==='about')openAov();
+    });
+  });
+
+  gsap.fromTo(scene,{autoAlpha:0},{autoAlpha:1,duration:1,ease:'power2.out'});
+  refreshCur();
+}
+
+/* ────────────────────────────────────────────────
+   PRELOADER
+──────────────────────────────────────────────── */
+gsap.registerPlugin(CustomEase,ScrollTrigger);
+CustomEase.create('hop','M0,0 C0.3,0 0.1,1 1,1');
+var preEl=document.getElementById('pre'),proxy={v:0};
+var preTl=gsap.timeline({onComplete:function(){
+  gsap.to(preEl,{clipPath:'inset(100% 0 0 0)',duration:1.2,ease:'expo.inOut',onComplete:function(){preEl.style.display='none';window._pafHeroInit();}});
+}});
+preTl.to(['#pre-lbl','#pre-n'],{y:0,opacity:1,duration:.7,stagger:.1,ease:'power3.out'})
+  .to(proxy,{v:100,duration:2.2,ease:'steps(20)',onUpdate:function(){
+    var n=Math.round(proxy.v);
+    document.getElementById('pre-n').textContent=String(n).padStart(3,'0');
+    document.getElementById('pre-fill').style.width=n+'%';
+  }},'-=0.3');
+</script>
+</body>
+</html>
